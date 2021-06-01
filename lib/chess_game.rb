@@ -1,27 +1,39 @@
 # frozen_string_literal: true
 
+require_relative './player'
+require_relative './chess_board'
+require_relative './chess_piece'
+
 class ChessGame
   attr_reader :board
 
   def initialize
-    @white_chess_pieces_array = [WhiteKing.new]
-    @black_chess_pieces_array = [BlackKing.new]
-    @board = place_all_pieces(@black_chess_pieces_array, place_all_pieces(@white_chess_pieces_array, ChessBoard.new))
+    @player_ordered_list = [WhitePlayer.new, BlackPlayer.new]
+    @board = ChessBoard.new.place_all_pieces_for_all_players(@player_ordered_list)
   end
 
-  def place_piece(piece, posn, input_chess_board)
-    posn_x = posn[0]
-    posn_y = posn[1]
-    input_chess_board.board[posn_y][posn_x] = piece
-  end
-
-  def place_all_pieces(input_pieces_array, input_chess_board)
-    input_pieces_array.each do |chess_piece_type|
-      chess_piece_type.starting_posn.each do |chess_piece_posn|
-        place_piece(chess_piece_type, chess_piece_posn, input_chess_board)
-      end
+  # Acquire player choice for posn, checks the output.
+  def acquire_player_choice
+    output = [-1, -1]
+    until is_input_on_the_board?(output)
+      puts 'input x coordinate:'
+      output[0] = gets.chomp.to_i
+      puts 'input y coordinate:'
+      output[1] = gets.chomp.to_i
     end
-    input_chess_board
+    output
+  end
+
+  # Validates that the output is on the board
+  def is_input_on_the_board?(posn)
+    x = posn[0]
+    y = posn[1]
+    x.is_a?(Integer) && y.is_a?(Integer) && x.between?(0, (@board.width - 1)) && y.between?(0, (@board.height - 1))
+  end
+
+  # Switch player
+  def switch_player
+    @player_ordered_list.rotate!
   end
 
   # Posn -> Boolean
@@ -29,76 +41,50 @@ class ChessGame
   def check_if_valid(posn)
     posn[0].between?(0, @width - 1) && posn[1].between?(0, @height - 1)
   end
-end
 
-class ChessPieces
-  attr_reader :starting_posn
-
-  def initialize(starting_posn)
-    @starting_posn = starting_posn
+  def player_won? ############## to be finalized
+    false
   end
 
-  def move_to_square ########################TBD
+  def acquire_piece_position
+    puts "#{@player_ordered_list[0].name} select piece to be played:"
+    acquire_player_choice
   end
 
-  def attack_square ########################TBD
-  end
-end
-
-class WhiteKing < ChessPieces
-  attr_reader :symbol
-
-  def initialize
-    @symbol = ['2654'.hex].pack('U')
-    @move_patern = [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]]
-    @attack_patern = @move_patern
-    super([[4, 0]])
-  end
-end
-
-class BlackKing < ChessPieces
-  attr_reader :symbol
-
-  def initialize
-    @symbol = ['265A'.hex].pack('U')
-    @move_patern = [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]]
-    @attack_patern = @move_patern
-    super([[4, 7]])
-  end
-end
-
-class ChessBoard
-  attr_accessor :board, :starting_posn
-  attr_reader :width, :height
-
-  def initialize
-    @width = 8
-    @height = 8
-    @board = board_creation(@width, @height)
+  def select_piece(posn)
+    x_posn = posn[0]
+    y_posn = posn[1]
+    @board.content[y_posn][x_posn]
   end
 
-  def board_creation(width, height)
-    Array.new(height) {Array.new(width, nil)}
+  def select_posn ############## to be finalized
+    puts "#{@player_ordered_list[0].name} select destination position:"
+    acquire_player_choice
   end
 
-  def print_board
-    input_board = @board.transpose
-    puts "\n"
-    7.downto(0) do |i|
-      puts '    +---+---+---+---+---+---+---+---+'
-      print "  #{i+1} |"
-      input_board.each do |column|
-        column[i].nil? ? print('   ') : print(" #{column[i].symbol} ")
-        print '|'
-      end
-      puts "\n"
+  def move_piece(piece_selected, posn_initial, posn_selected) ############## to be finalized
+    x_posn_initial = posn_initial[0]
+    y_posn_initial  = posn_initial[1]
+    @board.content[y_posn_initial][x_posn_initial] = nil
+    x_posn_selected = posn_selected[0]
+    y_posn_selected = posn_selected[1]
+    @board.content[y_posn_selected][x_posn_selected] = piece_selected
+  end
+
+  # Main play loop
+  def play
+    @board.print_board
+    until player_won?
+      piece_posn = acquire_piece_position
+      piece_selected = select_piece(piece_posn)
+      posn_selected = select_posn
+      move_piece(piece_selected, piece_posn, posn_selected)
+      @board.print_board
+      switch_player
+      break
     end
-    puts '    +---+---+---+---+---+---+---+---+'
-    puts '      a   b   c   d   e   f   g   h'
+    player_won? ? puts("#{@player_ordered_list[0].name} has won the game!") : puts('TIE!')
   end
 end
 
-test_game = ChessGame.new
-
-p test_game.board
-test_game.board.print_board
+ChessGame.new.play
