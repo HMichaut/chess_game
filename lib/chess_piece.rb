@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Represents a generic chess piece
 class ChessPiece
   attr_reader :starting_posn
 
@@ -8,8 +9,9 @@ class ChessPiece
   end
 end
 
+# Represents a white king
 class WhiteKing < ChessPiece
-  attr_reader :symbol
+  attr_reader :symbol, :move_patern
 
   def initialize
     @symbol = ['2654'.hex].pack('U')
@@ -19,6 +21,7 @@ class WhiteKing < ChessPiece
   end
 end
 
+# Represents a black king
 class BlackKing < ChessPiece
   attr_reader :symbol
 
