@@ -2,7 +2,7 @@
 
 # Represents a chess board
 class ChessBoard
-  attr_accessor :content, :starting_posn
+  attr_accessor :content
   attr_reader :width, :height
 
   def initialize
@@ -23,10 +23,8 @@ class ChessBoard
   end
 
   def place_all_pieces_for_one_player(input_pieces_array)
-    input_pieces_array.each do |chess_piece_type|
-      chess_piece_type.starting_posn.each do |chess_piece_posn|
-        place_piece(chess_piece_type, chess_piece_posn)
-      end
+    input_pieces_array.each do |chess_piece|
+      place_piece(chess_piece, chess_piece.piece_posn)
     end
   end
 
