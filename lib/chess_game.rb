@@ -42,7 +42,7 @@ class ChessGame
     posn[0].between?(0, @width - 1) && posn[1].between?(0, @height - 1)
   end
 
-  def player_won? ############## to be finalized
+  def player_won? ############################################################### to be finalized
     false
   end
 
@@ -75,18 +75,31 @@ class ChessGame
     @player_ordered_list[0].chess_pieces_array.include?(piece_selected)
   end
 
-  def create_legal_moves_array(piece_selected, piece_posn)
+  def create_legal_moves_array(piece_selected, piece_posn, target_piece_selected)
     posn_x = piece_posn[0]
     posn_y = piece_posn[1]
-    move_array = piece_selected.move_patern.map { |move| [posn_x + move[0], posn_y + move[1]] }
+    if target_piece_selected.nil?
+      move_array = piece_selected.move_patern.map { |move| [posn_x + move[0], posn_y + move[1]] }
+    else
+      move_array = piece_selected.attack_patern.map { |move| [posn_x + move[0], posn_y + move[1]] }
+    end
     move_array.select { |move| is_input_on_the_board?(move) }
   end
 
-  def move_legal?(posn_selected, piece_selected, piece_posn) ######################### add a check for the king uncovering
+  def move_legal?(posn_selected, piece_selected, piece_posn, target_piece_selected) ######################### add a check for the king uncovering
     return false unless is_input_on_the_board?(posn_selected)
 
-    legal_move_array = create_legal_moves_array(piece_selected, piece_posn)
+    legal_move_array = create_legal_moves_array(piece_selected, piece_posn, target_piece_selected)
     legal_move_array.include?(posn_selected)
+  end
+
+  def attack_piece(piece_selected, piece_posn, target_piece_selected, posn_selected)
+    x_posn_initial = posn_initial[0]
+    y_posn_initial  = posn_initial[1]
+    @board.content[y_posn_initial][x_posn_initial] = nil
+    x_posn_selected = posn_selected[0]
+    y_posn_selected = posn_selected[1]
+    @board.content[y_posn_selected][x_posn_selected] = piece_selected
   end
 
   # Main play loop
@@ -94,20 +107,21 @@ class ChessGame
     @board.print_board
     until player_won?
       piece_selected = nil
+      target_piece_selected = nil
       posn_selected = [-1, -1]
       piece_posn = [-1, -1]
-      until move_legal?(posn_selected, piece_selected, piece_posn)
+      until move_legal?(posn_selected, piece_selected, piece_posn, target_piece_selected)
         piece_selected = nil
         until selection_own_piece?(piece_selected)
           piece_posn = acquire_piece_position
           piece_selected = select_piece(piece_posn)
         end
         posn_selected = select_posn
+        target_piece_selected = select_piece(posn_selected)
       end
       move_piece(piece_selected, piece_posn, posn_selected)
       @board.print_board
       switch_player
-      break
     end
     player_won? ? puts("#{@player_ordered_list[0].name} has won the game!") : puts('TIE!')
   end

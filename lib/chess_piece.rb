@@ -11,7 +11,7 @@ end
 
 # Represents a white king
 class WhiteKing < ChessPiece
-  attr_reader :symbol, :move_patern
+  attr_reader :symbol, :move_patern, :attack_patern
 
   def initialize
     @symbol = ['2654'.hex].pack('U')
@@ -23,7 +23,7 @@ end
 
 # Represents a black king
 class BlackKing < ChessPiece
-  attr_reader :symbol
+  attr_reader :symbol, :move_patern, :attack_patern
 
   def initialize
     @symbol = ['265A'.hex].pack('U')
