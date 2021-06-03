@@ -39,8 +39,7 @@ class ChessBoard
     puts "\n"
     7.downto(0) do |i|
       puts '    +---+---+---+---+---+---+---+---+'
-      # print "  #{i+1} |"     final print
-      print "  #{i} |"
+      print "  #{i+1} |"
       input_board.each do |column|
         column[i].nil? ? print('   ') : print(" #{column[i].symbol} ")
         print '|'
@@ -48,7 +47,6 @@ class ChessBoard
       puts "\n"
     end
     puts '    +---+---+---+---+---+---+---+---+'
-    # puts '      a   b   c   d   e   f   g   h'   final print
-    puts '      0   1   2   3   4   5   6   7'
+    puts '      a   b   c   d   e   f   g   h'
   end
 end
