@@ -13,6 +13,7 @@ class Player
       output = x_array.find { |item| (item.is_a?(BlackKing) || item.is_a?(WhiteKing)) && item.color == @color }
       return output unless output.nil?
     end
+    puts 'ERROR'
   end
 end
 
@@ -23,7 +24,13 @@ class WhitePlayer < Player
 
   def initialize
     super('White Player')
-    @chess_pieces_array = [WhiteKing.new([1, 2])]
+    # @chess_pieces_array = [WhiteKing.new([4, 0]), WhitePawn.new([0, 1]), WhitePawn.new([1, 1]), WhitePawn.new([2, 1]),
+    #                        WhitePawn.new([3, 1]), WhitePawn.new([4, 1]), WhitePawn.new([5, 1]), WhitePawn.new([6, 1]),
+    #                        WhitePawn.new([7, 1]), WhiteQueen.new([3, 0]), WhiteRook.new([0, 0]), WhiteRook.new([7, 0]),
+    #                        WhiteBishop.new([2, 0]), WhiteBishop.new([5, 0]), WhiteKnight.new([1, 0]), 
+    #                        WhiteKnight.new([6, 0])]
+    @chess_pieces_array = [WhiteKing.new([4, 0]), WhitePawn.new([0, 1]), WhitePawn.new([1, 1]), WhitePawn.new([2, 1]),
+                           WhitePawn.new([3, 1]), WhitePawn.new([4, 1]), WhitePawn.new([5, 1]), WhitePawn.new([6, 1]), WhiteRook.new([7, 6])]
     @color = 'white'
   end
 end
@@ -35,7 +42,12 @@ class BlackPlayer < Player
 
   def initialize
     super('Black Player')
-    @chess_pieces_array = [BlackKing.new([0, 0])]
+    # @chess_pieces_array = [BlackKing.new([4, 7]), BlackPawn.new([0, 6]), BlackPawn.new([1, 6]), BlackPawn.new([2, 6]),
+    #                        BlackPawn.new([3, 6]), BlackPawn.new([4, 6]), BlackPawn.new([5, 6]), BlackPawn.new([6, 6]),
+    #                        BlackPawn.new([7, 6]), BlackQueen.new([3, 7]), BlackRook.new([0, 7]), BlackRook.new([7, 7]),
+    #                        BlackBishop.new([2, 7]), BlackBishop.new([5, 7]), BlackKnight.new([1, 7]), 
+    #                        BlackKnight.new([6, 7])]
+    @chess_pieces_array = [BlackKing.new([4, 7]), BlackQueen.new([7, 1])]
     @color = 'black'
   end
 end
