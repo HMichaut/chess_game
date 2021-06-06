@@ -93,12 +93,13 @@ class WhiteKnight < ChessPiece
 end
 
 class WhitePawn < ChessPiece
-  attr_reader :symbol, :move_patern, :attack_patern, :color
+  attr_reader :symbol, :attack_patern, :color
+  attr_accessor :move_patern
 
   def initialize(piece_posn)
     @symbol = ['265F'.hex].pack('U')
-    @move_patern = [[0, 1]]
-    @attack_patern = [[1, 1], [-1, 1]]
+    @move_patern = [[0, 1], [0, 2]]
+    @attack_patern =[[1, 1], [-1, 1]] 
     @color = 'white'
     super(piece_posn)
   end
@@ -167,11 +168,12 @@ class BlackKnight < ChessPiece
 end
 
 class BlackPawn < ChessPiece
-  attr_reader :symbol, :move_patern, :attack_patern, :color
+  attr_reader :symbol, :attack_patern, :color
+  attr_accessor :move_patern
 
   def initialize(piece_posn)
     @symbol = ['2659'.hex].pack('U')
-    @move_patern = [[0, -1]]
+    @move_patern = [[0, -1], [0, -2]]
     @attack_patern = [[1, -1], [-1, -1]]
     @color = 'black'
     super(piece_posn)

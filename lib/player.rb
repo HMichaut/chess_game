@@ -15,6 +15,15 @@ class Player
     end
     puts 'ERROR'
   end
+
+  def muster_all_pieces_for_player(input_board)
+    piece_array = []
+    checked_color = @color
+    input_board.content.each do |x_array|
+      piece_array += x_array.select { |item| !item.nil? && item.color == checked_color }
+    end
+    piece_array
+  end
 end
 
 # Represents a white player
