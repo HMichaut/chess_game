@@ -5,7 +5,7 @@ require_relative './chess_board'
 require_relative './chess_piece'
 
 class ChessGame
-  attr_reader :board
+  attr_reader :board, :player_ordered_list
 
   def initialize
     @player_ordered_list = [WhitePlayer.new, BlackPlayer.new]
@@ -63,14 +63,13 @@ class ChessGame
         target_piece_selected = board_save.content[posn[1]][posn[0]]
         next if target_piece_selected.nil?
 
-        next unless move_legal?(posn, chess_piece_selected, target_piece_selected, board_save)
+        next if obstruction?(chess_piece.piece_posn, posn, board_save)
 
-        move_piece(board_save, chess_piece, posn)
         destination_element = board_save.content[posn[1]][posn[0]]
+        move_piece(board_save, chess_piece_selected, posn)
         next if !destination_element.nil? && destination_element.color == current_player.color
 
         attacking_piece = inform_which_piece_create_check(board_save, @player_ordered_list[1], @player_ordered_list[0])
-        board_save.print_board
         return false if attacking_piece.nil?
       end
 
@@ -79,10 +78,12 @@ class ChessGame
 
       move_array.each do |posn_move|
         board_save = Marshal.load(Marshal.dump(@board))
+        chess_piece_selected = board_save.content[chess_piece.piece_posn[1]][chess_piece.piece_posn[0]]
+        next if obstruction?(chess_piece_selected.piece_posn, posn_move, board_save)
+
         destination_element = board_save.content[posn_move[1]][posn_move[0]]
         next unless destination_element.nil?
 
-        chess_piece_selected = board_save.content[chess_piece.piece_posn[1]][chess_piece.piece_posn[0]]
         move_piece(board_save, chess_piece_selected, posn_move)
         attacking_piece = inform_which_piece_create_check(board_save, @player_ordered_list[1], @player_ordered_list[0])
         return false if attacking_piece.nil?
@@ -99,28 +100,36 @@ class ChessGame
   end
 
   def king_cannot_be_saved?(attacking_piece)
+    current_player = @player_ordered_list[0]
     opponent_player = @player_ordered_list[1]
     board_save = Marshal.load(Marshal.dump(@board))
     muster_all_pieces_for_player(board_save, opponent_player).each do |chess_piece|
-      attack_array = create_legal_moves_array(chess_piece, attacking_piece).select { |posn| posn == attacking_piece.piece_posn}
+      attack_array = create_legal_moves_array(chess_piece, attacking_piece).select { |posn| posn == attacking_piece.piece_posn }
       unless attack_array.nil?
-        move_piece(board_save, chess_piece, attack_array[0]) unless attack_array.empty?
+        board_save = Marshal.load(Marshal.dump(@board))
+        chess_piece_selected = board_save.content[chess_piece.piece_posn[1]][chess_piece.piece_posn[0]]
+        next if obstruction?(chess_piece.piece_posn, attacking_piece.piece_posn, board_save)
 
-        attacking_piece = inform_which_piece_create_check(board_save, @player_ordered_list[0], @player_ordered_list[1])
+        move_piece(board_save, chess_piece_selected, attack_array[0]) unless attack_array.empty?
 
-        return false if attacking_piece.nil?
+        attacking_piece_returned = inform_which_piece_create_check(board_save, @player_ordered_list[0], @player_ordered_list[1])
+
+        return false if attacking_piece_returned.nil?
       end
       move_array = create_legal_moves_array(chess_piece, nil)
       next if move_array.nil?
 
       move_array.each do |posn|
         board_save = Marshal.load(Marshal.dump(@board))
-        move_piece(board_save, chess_piece, posn)
+        chess_piece_selected = board_save.content[chess_piece.piece_posn[1]][chess_piece.piece_posn[0]]
+        next if obstruction?(chess_piece.piece_posn, posn, board_save)
+
         destination_element = board_save.content[posn[1]][posn[0]]
         next unless destination_element.nil?
 
-        attacking_piece = inform_which_piece_create_check(board_save, @player_ordered_list[0], @player_ordered_list[1])
-        return false if attacking_piece.nil?
+        move_piece(board_save, chess_piece_selected, posn)
+        attacking_piece_returned = inform_which_piece_create_check(board_save, @player_ordered_list[0], @player_ordered_list[1])
+        return false if attacking_piece_returned.nil?
       end
     end
     true
@@ -140,7 +149,7 @@ class ChessGame
     chess_piece_array_to_be_considered = muster_all_pieces_for_player(input_board, current_player)
     chess_piece_array_to_be_considered.each do |chess_piece|
       proc_array = create_legal_moves_array(chess_piece, opponent_king)
-      return chess_piece if proc_array.any? { |posn| posn == opponent_king.piece_posn }
+      return chess_piece if proc_array.any? { |posn| posn == opponent_king.piece_posn && !obstruction?(chess_piece.piece_posn, opponent_king.piece_posn, input_board) }
     end
     nil
   end
@@ -150,7 +159,7 @@ class ChessGame
     acquire_player_choice
   end
 
-  def select_piece(posn) #####################################################################################################utiliser dans le code
+  def select_piece(posn) #####################################################################################################utiliser dans le code + methode board
     x_posn = posn[0]
     y_posn = posn[1]
     @board.content[y_posn][x_posn]
@@ -252,21 +261,27 @@ class ChessGame
     y_initial = posn_initial[1]
     x_end = posn_end[0]
     y_end = posn_end[1]
-    if x_initial < x_end
+    if x_initial < x_end && y_initial < y_end
       ((x_initial + 1)..(x_end - 1)).zip((y_initial + 1)..(y_end - 1)).any? { |x_val, y_val| !input_board.content[y_val][x_val].nil? }
-    elsif x_initial > x_end
+    elsif x_initial > x_end && y_initial > y_end
       ((x_end + 1)..(x_initial - 1)).zip((y_end + 1)..(y_initial - 1)).any? { |x_val, y_val| !input_board.content[y_val][x_val].nil? }
+    elsif x_initial < x_end && y_initial > y_end
+      ((x_initial + 1)..(x_end - 1)).zip((y_end + 1)..(y_initial - 1)).any? { |x_val, y_val| !input_board.content[y_val][x_val].nil? }
+    elsif x_initial > x_end && y_initial < y_end
+      ((x_end + 1)..(x_initial - 1)).zip(((y_initial + 1)..(y_end - 1)).to_a.reverse).any? { |x_val, y_val| !input_board.content[y_val][x_val].nil? }
     end
   end
 
   def move_legal?(posn_selected, piece_selected, target_piece_selected, input_board)
     own_piece_array = muster_all_pieces_for_player(@board, @player_ordered_list[0])
+
     return false if own_piece_array.any? { |chess_piece| posn_selected == chess_piece.piece_posn}
 
     return false unless is_input_on_the_board?(posn_selected)
 
     legal_move_array = create_legal_moves_array(piece_selected, target_piece_selected)
     return false unless legal_move_array.include?(posn_selected)
+
 
     return false if obstruction?(posn_selected, piece_selected.piece_posn, input_board)
 
