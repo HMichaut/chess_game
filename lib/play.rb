@@ -2,4 +2,4 @@
 
 require_relative './chess_game'
 
-ChessGame.new.play
+ChessGame.new_game_or_load

@@ -3,6 +3,7 @@
 require_relative './player'
 require_relative './chess_board'
 require_relative './chess_piece'
+require 'yaml'
 
 # Represents a chess game
 class ChessGame
@@ -18,10 +19,12 @@ class ChessGame
     output = [-1, -1]
     alph_array = ('a'..'z').to_a
     until is_input_on_the_board?(output)
-      puts 'input coordinate:'
+      puts 'input coordinate or save:'
       output_str = gets.chomp
       if output_str.length == 2 && output_str[0].count('a-z') == 1 && output_str[1].to_i.to_s == output_str[1]
         output = [alph_array.find_index(output_str[0]), output_str[1].to_i - 1]
+      elsif output_str == 'save'
+        open('chess_game.yaml', 'w') { |f| YAML.dump(self, f) }
       end
     end
     output
@@ -295,5 +298,20 @@ class ChessGame
       switch_player
     end
     player_won? ? puts("#{@player_ordered_list[0].name} has won the game!") : puts('TIE!')
+  end
+
+  def self.new_game_or_load
+    user_input = nil
+    until %w[y n].include?(user_input)
+      puts 'Load saved game? y / n'
+      user_input = gets.chomp
+      if user_input == 'y'
+        loaded_game = open('chess_game.yaml', 'r') { |f| YAML.load_file(f) }
+        loaded_game.play
+      elsif user_input == 'n'
+        new_game = ChessGame.new
+        new_game.play
+      end
+    end
   end
 end

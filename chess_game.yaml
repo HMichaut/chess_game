@@ -1,0 +1,1212 @@
+--- !ruby/object:ChessGame
+player_ordered_list:
+- !ruby/object:WhitePlayer
+  name: White Player
+  chess_pieces_array:
+  - &21 !ruby/object:WhiteKing
+    symbol: "♚"
+    move_patern: &1
+    - - 0
+      - 1
+    - - 1
+      - 1
+    - - 1
+      - 0
+    - - 1
+      - -1
+    - - 0
+      - -1
+    - - -1
+      - -1
+    - - -1
+      - 0
+    - - -1
+      - 1
+    attack_patern: *1
+    color: white
+    piece_posn:
+    - 4
+    - 0
+  - &25 !ruby/object:WhitePawn
+    symbol: "♟"
+    move_patern:
+    - - 0
+      - 1
+    - - 0
+      - 2
+    attack_patern:
+    - - 1
+      - 1
+    - - -1
+      - 1
+    color: white
+    piece_posn:
+    - 0
+    - 1
+  - &26 !ruby/object:WhitePawn
+    symbol: "♟"
+    move_patern:
+    - - 0
+      - 1
+    - - 0
+      - 2
+    attack_patern:
+    - - 1
+      - 1
+    - - -1
+      - 1
+    color: white
+    piece_posn:
+    - 1
+    - 1
+  - &27 !ruby/object:WhitePawn
+    symbol: "♟"
+    move_patern:
+    - - 0
+      - 1
+    - - 0
+      - 2
+    attack_patern:
+    - - 1
+      - 1
+    - - -1
+      - 1
+    color: white
+    piece_posn:
+    - 2
+    - 1
+  - &32 !ruby/object:WhitePawn
+    symbol: "♟"
+    move_patern:
+    - - 0
+      - 1
+    attack_patern:
+    - - 1
+      - 1
+    - - -1
+      - 1
+    color: white
+    piece_posn:
+    - 4
+    - 4
+  - &28 !ruby/object:WhitePawn
+    symbol: "♟"
+    move_patern:
+    - - 0
+      - 1
+    - - 0
+      - 2
+    attack_patern:
+    - - 1
+      - 1
+    - - -1
+      - 1
+    color: white
+    piece_posn:
+    - 4
+    - 1
+  - &29 !ruby/object:WhitePawn
+    symbol: "♟"
+    move_patern:
+    - - 0
+      - 1
+    - - 0
+      - 2
+    attack_patern:
+    - - 1
+      - 1
+    - - -1
+      - 1
+    color: white
+    piece_posn:
+    - 5
+    - 1
+  - &30 !ruby/object:WhitePawn
+    symbol: "♟"
+    move_patern:
+    - - 0
+      - 1
+    - - 0
+      - 2
+    attack_patern:
+    - - 1
+      - 1
+    - - -1
+      - 1
+    color: white
+    piece_posn:
+    - 6
+    - 1
+  - &31 !ruby/object:WhitePawn
+    symbol: "♟"
+    move_patern:
+    - - 0
+      - 1
+    - - 0
+      - 2
+    attack_patern:
+    - - 1
+      - 1
+    - - -1
+      - 1
+    color: white
+    piece_posn:
+    - 7
+    - 1
+  - &20 !ruby/object:WhiteQueen
+    symbol: "♛"
+    move_patern: &2
+    - - 0
+      - 1
+    - - 0
+      - 2
+    - - 0
+      - 3
+    - - 0
+      - 4
+    - - 0
+      - 5
+    - - 0
+      - 6
+    - - 0
+      - 7
+    - - 0
+      - -1
+    - - 0
+      - -2
+    - - 0
+      - -3
+    - - 0
+      - -4
+    - - 0
+      - -5
+    - - 0
+      - -6
+    - - 0
+      - -7
+    - - 1
+      - 0
+    - - 2
+      - 0
+    - - 3
+      - 0
+    - - 4
+      - 0
+    - - 5
+      - 0
+    - - 6
+      - 0
+    - - 7
+      - 0
+    - - -1
+      - 0
+    - - -2
+      - 0
+    - - -3
+      - 0
+    - - -4
+      - 0
+    - - -5
+      - 0
+    - - -6
+      - 0
+    - - -7
+      - 0
+    - - 1
+      - 1
+    - - 2
+      - 2
+    - - 3
+      - 3
+    - - 4
+      - 4
+    - - 5
+      - 5
+    - - 6
+      - 6
+    - - 7
+      - 7
+    - - -1
+      - 1
+    - - -2
+      - 2
+    - - -3
+      - 3
+    - - -4
+      - 4
+    - - -5
+      - 5
+    - - -6
+      - 6
+    - - -7
+      - 7
+    - - 1
+      - -1
+    - - 2
+      - -2
+    - - 3
+      - -3
+    - - 4
+      - -4
+    - - 5
+      - -5
+    - - 6
+      - -6
+    - - 7
+      - -7
+    - - -1
+      - -1
+    - - -2
+      - -2
+    - - -3
+      - -3
+    - - -4
+      - -4
+    - - -5
+      - -5
+    - - -6
+      - -6
+    - - -7
+      - -7
+    attack_patern: *2
+    color: white
+    piece_posn:
+    - 3
+    - 0
+  - &17 !ruby/object:WhiteRook
+    symbol: "♜"
+    move_patern: &3
+    - - 0
+      - 1
+    - - 0
+      - 2
+    - - 0
+      - 3
+    - - 0
+      - 4
+    - - 0
+      - 5
+    - - 0
+      - 6
+    - - 0
+      - 7
+    - - 0
+      - -1
+    - - 0
+      - -2
+    - - 0
+      - -3
+    - - 0
+      - -4
+    - - 0
+      - -5
+    - - 0
+      - -6
+    - - 0
+      - -7
+    - - 1
+      - 0
+    - - 2
+      - 0
+    - - 3
+      - 0
+    - - 4
+      - 0
+    - - 5
+      - 0
+    - - 6
+      - 0
+    - - 7
+      - 0
+    - - -1
+      - 0
+    - - -2
+      - 0
+    - - -3
+      - 0
+    - - -4
+      - 0
+    - - -5
+      - 0
+    - - -6
+      - 0
+    - - -7
+      - 0
+    attack_patern: *3
+    color: white
+    piece_posn:
+    - 0
+    - 0
+  - &24 !ruby/object:WhiteRook
+    symbol: "♜"
+    move_patern: &4
+    - - 0
+      - 1
+    - - 0
+      - 2
+    - - 0
+      - 3
+    - - 0
+      - 4
+    - - 0
+      - 5
+    - - 0
+      - 6
+    - - 0
+      - 7
+    - - 0
+      - -1
+    - - 0
+      - -2
+    - - 0
+      - -3
+    - - 0
+      - -4
+    - - 0
+      - -5
+    - - 0
+      - -6
+    - - 0
+      - -7
+    - - 1
+      - 0
+    - - 2
+      - 0
+    - - 3
+      - 0
+    - - 4
+      - 0
+    - - 5
+      - 0
+    - - 6
+      - 0
+    - - 7
+      - 0
+    - - -1
+      - 0
+    - - -2
+      - 0
+    - - -3
+      - 0
+    - - -4
+      - 0
+    - - -5
+      - 0
+    - - -6
+      - 0
+    - - -7
+      - 0
+    attack_patern: *4
+    color: white
+    piece_posn:
+    - 7
+    - 0
+  - &19 !ruby/object:WhiteBishop
+    symbol: "♝"
+    move_patern: &5
+    - - 1
+      - 1
+    - - 2
+      - 2
+    - - 3
+      - 3
+    - - 4
+      - 4
+    - - 5
+      - 5
+    - - 6
+      - 6
+    - - 7
+      - 7
+    - - -1
+      - 1
+    - - -2
+      - 2
+    - - -3
+      - 3
+    - - -4
+      - 4
+    - - -5
+      - 5
+    - - -6
+      - 6
+    - - -7
+      - 7
+    - - 1
+      - -1
+    - - 2
+      - -2
+    - - 3
+      - -3
+    - - 4
+      - -4
+    - - 5
+      - -5
+    - - 6
+      - -6
+    - - 7
+      - -7
+    - - -1
+      - -1
+    - - -2
+      - -2
+    - - -3
+      - -3
+    - - -4
+      - -4
+    - - -5
+      - -5
+    - - -6
+      - -6
+    - - -7
+      - -7
+    attack_patern: *5
+    color: white
+    piece_posn:
+    - 2
+    - 0
+  - &22 !ruby/object:WhiteBishop
+    symbol: "♝"
+    move_patern: &6
+    - - 1
+      - 1
+    - - 2
+      - 2
+    - - 3
+      - 3
+    - - 4
+      - 4
+    - - 5
+      - 5
+    - - 6
+      - 6
+    - - 7
+      - 7
+    - - -1
+      - 1
+    - - -2
+      - 2
+    - - -3
+      - 3
+    - - -4
+      - 4
+    - - -5
+      - 5
+    - - -6
+      - 6
+    - - -7
+      - 7
+    - - 1
+      - -1
+    - - 2
+      - -2
+    - - 3
+      - -3
+    - - 4
+      - -4
+    - - 5
+      - -5
+    - - 6
+      - -6
+    - - 7
+      - -7
+    - - -1
+      - -1
+    - - -2
+      - -2
+    - - -3
+      - -3
+    - - -4
+      - -4
+    - - -5
+      - -5
+    - - -6
+      - -6
+    - - -7
+      - -7
+    attack_patern: *6
+    color: white
+    piece_posn:
+    - 5
+    - 0
+  - &18 !ruby/object:WhiteKnight
+    symbol: "♞"
+    move_patern: &7
+    - - 1
+      - 2
+    - - 2
+      - 1
+    - - -1
+      - -2
+    - - -2
+      - -1
+    - - -1
+      - 2
+    - - -2
+      - 1
+    - - 1
+      - -2
+    - - 2
+      - -1
+    attack_patern: *7
+    color: white
+    piece_posn:
+    - 1
+    - 0
+  - &23 !ruby/object:WhiteKnight
+    symbol: "♞"
+    move_patern: &8
+    - - 1
+      - 2
+    - - 2
+      - 1
+    - - -1
+      - -2
+    - - -2
+      - -1
+    - - -1
+      - 2
+    - - -2
+      - 1
+    - - 1
+      - -2
+    - - 2
+      - -1
+    attack_patern: *8
+    color: white
+    piece_posn:
+    - 6
+    - 0
+  color: white
+- !ruby/object:BlackPlayer
+  name: Black Player
+  chess_pieces_array:
+  - &44 !ruby/object:BlackKing
+    symbol: "♔"
+    move_patern: &9
+    - - 0
+      - 1
+    - - 1
+      - 1
+    - - 1
+      - 0
+    - - 1
+      - -1
+    - - 0
+      - -1
+    - - -1
+      - -1
+    - - -1
+      - 0
+    - - -1
+      - 1
+    attack_patern: *9
+    color: black
+    piece_posn:
+    - 4
+    - 7
+  - &34 !ruby/object:BlackPawn
+    symbol: "♙"
+    move_patern:
+    - - 0
+      - -1
+    - - 0
+      - -2
+    attack_patern:
+    - - 1
+      - -1
+    - - -1
+      - -1
+    color: black
+    piece_posn:
+    - 0
+    - 6
+  - &35 !ruby/object:BlackPawn
+    symbol: "♙"
+    move_patern:
+    - - 0
+      - -1
+    - - 0
+      - -2
+    attack_patern:
+    - - 1
+      - -1
+    - - -1
+      - -1
+    color: black
+    piece_posn:
+    - 1
+    - 6
+  - &36 !ruby/object:BlackPawn
+    symbol: "♙"
+    move_patern:
+    - - 0
+      - -1
+    - - 0
+      - -2
+    attack_patern:
+    - - 1
+      - -1
+    - - -1
+      - -1
+    color: black
+    piece_posn:
+    - 2
+    - 6
+  - &37 !ruby/object:BlackPawn
+    symbol: "♙"
+    move_patern:
+    - - 0
+      - -1
+    - - 0
+      - -2
+    attack_patern:
+    - - 1
+      - -1
+    - - -1
+      - -1
+    color: black
+    piece_posn:
+    - 3
+    - 6
+  - &38 !ruby/object:BlackPawn
+    symbol: "♙"
+    move_patern:
+    - - 0
+      - -1
+    - - 0
+      - -2
+    attack_patern:
+    - - 1
+      - -1
+    - - -1
+      - -1
+    color: black
+    piece_posn:
+    - 5
+    - 6
+  - &39 !ruby/object:BlackPawn
+    symbol: "♙"
+    move_patern:
+    - - 0
+      - -1
+    - - 0
+      - -2
+    attack_patern:
+    - - 1
+      - -1
+    - - -1
+      - -1
+    color: black
+    piece_posn:
+    - 6
+    - 6
+  - &40 !ruby/object:BlackPawn
+    symbol: "♙"
+    move_patern:
+    - - 0
+      - -1
+    - - 0
+      - -2
+    attack_patern:
+    - - 1
+      - -1
+    - - -1
+      - -1
+    color: black
+    piece_posn:
+    - 7
+    - 6
+  - &33 !ruby/object:BlackQueen
+    symbol: "♕"
+    move_patern: &10
+    - - 0
+      - 1
+    - - 0
+      - 2
+    - - 0
+      - 3
+    - - 0
+      - 4
+    - - 0
+      - 5
+    - - 0
+      - 6
+    - - 0
+      - 7
+    - - 0
+      - -1
+    - - 0
+      - -2
+    - - 0
+      - -3
+    - - 0
+      - -4
+    - - 0
+      - -5
+    - - 0
+      - -6
+    - - 0
+      - -7
+    - - 1
+      - 0
+    - - 2
+      - 0
+    - - 3
+      - 0
+    - - 4
+      - 0
+    - - 5
+      - 0
+    - - 6
+      - 0
+    - - 7
+      - 0
+    - - -1
+      - 0
+    - - -2
+      - 0
+    - - -3
+      - 0
+    - - -4
+      - 0
+    - - -5
+      - 0
+    - - -6
+      - 0
+    - - -7
+      - 0
+    - - 1
+      - 1
+    - - 2
+      - 2
+    - - 3
+      - 3
+    - - 4
+      - 4
+    - - 5
+      - 5
+    - - 6
+      - 6
+    - - 7
+      - 7
+    - - -1
+      - 1
+    - - -2
+      - 2
+    - - -3
+      - 3
+    - - -4
+      - 4
+    - - -5
+      - 5
+    - - -6
+      - 6
+    - - -7
+      - 7
+    - - 1
+      - -1
+    - - 2
+      - -2
+    - - 3
+      - -3
+    - - 4
+      - -4
+    - - 5
+      - -5
+    - - 6
+      - -6
+    - - 7
+      - -7
+    - - -1
+      - -1
+    - - -2
+      - -2
+    - - -3
+      - -3
+    - - -4
+      - -4
+    - - -5
+      - -5
+    - - -6
+      - -6
+    - - -7
+      - -7
+    attack_patern: *10
+    color: black
+    piece_posn:
+    - 6
+    - 4
+  - &41 !ruby/object:BlackRook
+    symbol: "♖"
+    move_patern: &11
+    - - 0
+      - 1
+    - - 0
+      - 2
+    - - 0
+      - 3
+    - - 0
+      - 4
+    - - 0
+      - 5
+    - - 0
+      - 6
+    - - 0
+      - 7
+    - - 0
+      - -1
+    - - 0
+      - -2
+    - - 0
+      - -3
+    - - 0
+      - -4
+    - - 0
+      - -5
+    - - 0
+      - -6
+    - - 0
+      - -7
+    - - 1
+      - 0
+    - - 2
+      - 0
+    - - 3
+      - 0
+    - - 4
+      - 0
+    - - 5
+      - 0
+    - - 6
+      - 0
+    - - 7
+      - 0
+    - - -1
+      - 0
+    - - -2
+      - 0
+    - - -3
+      - 0
+    - - -4
+      - 0
+    - - -5
+      - 0
+    - - -6
+      - 0
+    - - -7
+      - 0
+    attack_patern: *11
+    color: black
+    piece_posn:
+    - 0
+    - 7
+  - &47 !ruby/object:BlackRook
+    symbol: "♖"
+    move_patern: &12
+    - - 0
+      - 1
+    - - 0
+      - 2
+    - - 0
+      - 3
+    - - 0
+      - 4
+    - - 0
+      - 5
+    - - 0
+      - 6
+    - - 0
+      - 7
+    - - 0
+      - -1
+    - - 0
+      - -2
+    - - 0
+      - -3
+    - - 0
+      - -4
+    - - 0
+      - -5
+    - - 0
+      - -6
+    - - 0
+      - -7
+    - - 1
+      - 0
+    - - 2
+      - 0
+    - - 3
+      - 0
+    - - 4
+      - 0
+    - - 5
+      - 0
+    - - 6
+      - 0
+    - - 7
+      - 0
+    - - -1
+      - 0
+    - - -2
+      - 0
+    - - -3
+      - 0
+    - - -4
+      - 0
+    - - -5
+      - 0
+    - - -6
+      - 0
+    - - -7
+      - 0
+    attack_patern: *12
+    color: black
+    piece_posn:
+    - 7
+    - 7
+  - &43 !ruby/object:BlackBishop
+    symbol: "♗"
+    move_patern: &13
+    - - 1
+      - 1
+    - - 2
+      - 2
+    - - 3
+      - 3
+    - - 4
+      - 4
+    - - 5
+      - 5
+    - - 6
+      - 6
+    - - 7
+      - 7
+    - - -1
+      - 1
+    - - -2
+      - 2
+    - - -3
+      - 3
+    - - -4
+      - 4
+    - - -5
+      - 5
+    - - -6
+      - 6
+    - - -7
+      - 7
+    - - 1
+      - -1
+    - - 2
+      - -2
+    - - 3
+      - -3
+    - - 4
+      - -4
+    - - 5
+      - -5
+    - - 6
+      - -6
+    - - 7
+      - -7
+    - - -1
+      - -1
+    - - -2
+      - -2
+    - - -3
+      - -3
+    - - -4
+      - -4
+    - - -5
+      - -5
+    - - -6
+      - -6
+    - - -7
+      - -7
+    attack_patern: *13
+    color: black
+    piece_posn:
+    - 2
+    - 7
+  - &45 !ruby/object:BlackBishop
+    symbol: "♗"
+    move_patern: &14
+    - - 1
+      - 1
+    - - 2
+      - 2
+    - - 3
+      - 3
+    - - 4
+      - 4
+    - - 5
+      - 5
+    - - 6
+      - 6
+    - - 7
+      - 7
+    - - -1
+      - 1
+    - - -2
+      - 2
+    - - -3
+      - 3
+    - - -4
+      - 4
+    - - -5
+      - 5
+    - - -6
+      - 6
+    - - -7
+      - 7
+    - - 1
+      - -1
+    - - 2
+      - -2
+    - - 3
+      - -3
+    - - 4
+      - -4
+    - - 5
+      - -5
+    - - 6
+      - -6
+    - - 7
+      - -7
+    - - -1
+      - -1
+    - - -2
+      - -2
+    - - -3
+      - -3
+    - - -4
+      - -4
+    - - -5
+      - -5
+    - - -6
+      - -6
+    - - -7
+      - -7
+    attack_patern: *14
+    color: black
+    piece_posn:
+    - 5
+    - 7
+  - &42 !ruby/object:BlackKnight
+    symbol: "♘"
+    move_patern: &15
+    - - 1
+      - 2
+    - - 2
+      - 1
+    - - -1
+      - -2
+    - - -2
+      - -1
+    - - -1
+      - 2
+    - - -2
+      - 1
+    - - 1
+      - -2
+    - - 2
+      - -1
+    attack_patern: *15
+    color: black
+    piece_posn:
+    - 1
+    - 7
+  - &46 !ruby/object:BlackKnight
+    symbol: "♘"
+    move_patern: &16
+    - - 1
+      - 2
+    - - 2
+      - 1
+    - - -1
+      - -2
+    - - -2
+      - -1
+    - - -1
+      - 2
+    - - -2
+      - 1
+    - - 1
+      - -2
+    - - 2
+      - -1
+    attack_patern: *16
+    color: black
+    piece_posn:
+    - 6
+    - 7
+  color: black
+board: !ruby/object:ChessBoard
+  width: 8
+  height: 8
+  content:
+  - - *17
+    - *18
+    - *19
+    - *20
+    - *21
+    - *22
+    - *23
+    - *24
+  - - *25
+    - *26
+    - *27
+    - 
+    - *28
+    - *29
+    - *30
+    - *31
+  - - 
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
+  - - 
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
+  - - 
+    - 
+    - 
+    - 
+    - *32
+    - 
+    - *33
+    - 
+  - - 
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
+  - - *34
+    - *35
+    - *36
+    - *37
+    - 
+    - *38
+    - *39
+    - *40
+  - - *41
+    - *42
+    - *43
+    - 
+    - *44
+    - *45
+    - *46
+    - *47
