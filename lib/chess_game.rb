@@ -150,7 +150,7 @@ class ChessGame
     acquire_player_choice
   end
 
-  def select_piece(posn)
+  def select_piece(posn) #####################################################################################################utiliser dans le code
     x_posn = posn[0]
     y_posn = posn[1]
     @board.content[y_posn][x_posn]
@@ -210,25 +210,35 @@ class ChessGame
   end
 
   def move_horizontal?(posn_initial, posn_end)
-    posn_initial[0] == posn_end[0]
+    posn_initial[1] == posn_end[1]
   end
 
   def horizontal_obstruction?(posn_initial, posn_end, input_board)
     x_initial = posn_initial[0]
     x_end = posn_end[0]
     y_initial = posn_initial[1]
-    ((x_initial + 1)..(x_end - 1)).all? { |x_val| input_board.content[y_initial][x_val].nil? }
+
+    if x_initial < x_end
+      ((x_initial + 1)..(x_end - 1)).any? { |x_val| !input_board.content[y_initial][x_val].nil? }
+    elsif x_initial > x_end
+      ((x_end + 1)..(x_initial - 1)).any? { |x_val| !input_board.content[y_initial][x_val].nil? }
+    end
   end
 
   def move_vertical?(posn_initial, posn_end)
-    posn_initial[1] == posn_end[1]
+    posn_initial[0] == posn_end[0]
   end
 
   def vertical_obstruction?(posn_initial, posn_end, input_board)
     y_initial = posn_initial[1]
     y_end = posn_end[1]
     x_initial = posn_initial[0]
-    ((y_initial + 1)..(y_end - 1)).all? { |y_val| input_board.content[y_val][x_initial].nil? }
+
+    if y_initial < y_end
+      ((y_initial + 1)..(y_end - 1)).any? { |y_val| !input_board.content[y_val][x_initial].nil? }
+    elsif y_initial > y_end
+      ((y_end + 1)..(y_initial - 1)).any? { |y_val| !input_board.content[y_val][x_initial].nil? }
+    end
   end
 
   def move_diagonal?(posn_initial, posn_end)
@@ -242,7 +252,11 @@ class ChessGame
     y_initial = posn_initial[1]
     x_end = posn_end[0]
     y_end = posn_end[1]
-    ((x_initial + 1)..(x_end - 1)).zip((y_initial + 1)..(y_end - 1)).all? { |x_val, y_val| input_board.content[y_val][x_val].nil? }
+    if x_initial < x_end
+      ((x_initial + 1)..(x_end - 1)).zip((y_initial + 1)..(y_end - 1)).any? { |x_val, y_val| !input_board.content[y_val][x_val].nil? }
+    elsif x_initial > x_end
+      ((x_end + 1)..(x_initial - 1)).zip((y_end + 1)..(y_initial - 1)).any? { |x_val, y_val| !input_board.content[y_val][x_val].nil? }
+    end
   end
 
   def move_legal?(posn_selected, piece_selected, target_piece_selected, input_board)
