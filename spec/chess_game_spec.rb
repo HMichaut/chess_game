@@ -1242,15 +1242,15 @@ describe ChessGame do
   end
 
   describe '#inform_which_piece_create_check' do
-    it 'Return nil for the step before Anastasia mate situation' do
+    it 'Return false for the step before Anastasia mate situation' do
       new_game.board.content = Array.new(8) { Array.new(8, nil) }
       new_game.board.content[0][6] = WhiteKing.new([6, 0])
       new_game.board.content[6][4] = WhiteKnight.new([4, 6])
       new_game.board.content[2][4] = WhiteRook.new([4, 2])
       new_game.board.content[6][6] = BlackPawn.new([6, 6])
       new_game.board.content[6][7] = BlackKing.new([7, 6])
-      solution = new_game.inform_which_piece_create_check(new_game.board, new_game.player_ordered_list[0], new_game.player_ordered_list[1])
-      expect(solution).to eql(nil)
+      solution = new_game.check_situation?(new_game.board, new_game.player_ordered_list[0], new_game.player_ordered_list[1])
+      expect(solution).to be false
     end
     it 'Return true for the Anastasia mate situation' do
       new_game.board.content = Array.new(8) { Array.new(8, nil) }
@@ -1260,8 +1260,8 @@ describe ChessGame do
       new_game.board.content[2][7] = attacking_piece
       new_game.board.content[6][6] = BlackPawn.new([6, 6])
       new_game.board.content[6][7] = BlackKing.new([7, 6])
-      solution = new_game.inform_which_piece_create_check(new_game.board, new_game.player_ordered_list[0], new_game.player_ordered_list[1])
-      expect(solution).to eql(attacking_piece)
+      solution = new_game.check_situation?(new_game.board, new_game.player_ordered_list[0], new_game.player_ordered_list[1])
+      expect(solution).to be true
     end
     it 'Return nil for the step before Andersen mate situation' do
       new_game.board.content = Array.new(8) { Array.new(8, nil) }
@@ -1269,8 +1269,8 @@ describe ChessGame do
       new_game.board.content[6][6] = WhitePawn.new([6, 6])
       new_game.board.content[1][7] = WhiteRook.new([7, 1])
       new_game.board.content[7][6] = BlackKing.new([6, 7])
-      solution = new_game.inform_which_piece_create_check(new_game.board, new_game.player_ordered_list[0], new_game.player_ordered_list[1])
-      expect(solution).to eql(nil)
+      solution = new_game.check_situation?(new_game.board, new_game.player_ordered_list[0], new_game.player_ordered_list[1])
+      expect(solution).to be false
     end
     it 'Return true for the Andersen mate situation' do
       new_game.board.content = Array.new(8) { Array.new(8, nil) }
@@ -1279,8 +1279,8 @@ describe ChessGame do
       attacking_piece = WhiteRook.new([7, 7])
       new_game.board.content[7][7] = attacking_piece
       new_game.board.content[7][6] = BlackKing.new([6, 7])
-      solution = new_game.inform_which_piece_create_check(new_game.board, new_game.player_ordered_list[0], new_game.player_ordered_list[1])
-      expect(solution).to eql(attacking_piece)
+      solution = new_game.check_situation?(new_game.board, new_game.player_ordered_list[0], new_game.player_ordered_list[1])
+      expect(solution).to be true
     end
     it 'Return nil for the step before Arabian mate situation' do
       new_game.board.content = Array.new(8) { Array.new(8, nil) }
@@ -1288,8 +1288,8 @@ describe ChessGame do
       new_game.board.content[5][5] = WhiteKnight.new([5, 5])
       new_game.board.content[6][1] = WhiteRook.new([1, 6])
       new_game.board.content[7][7] = BlackKing.new([7, 7])
-      solution = new_game.inform_which_piece_create_check(new_game.board, new_game.player_ordered_list[0], new_game.player_ordered_list[1])
-      expect(solution).to eql(nil)
+      solution = new_game.check_situation?(new_game.board, new_game.player_ordered_list[0], new_game.player_ordered_list[1])
+      expect(solution).to be false
     end
     it 'Return true for the Arabian mate situation' do
       new_game.board.content = Array.new(8) { Array.new(8, nil) }
@@ -1300,8 +1300,8 @@ describe ChessGame do
       new_game.board.content[7][7] = BlackKing.new([7, 7])
       new_game.board.content[1][1] = BlackRook.new([1, 1])
       new_game.board.content[1][2] = WhitePawn.new([2, 1])
-      solution = new_game.inform_which_piece_create_check(new_game.board, new_game.player_ordered_list[0], new_game.player_ordered_list[1])
-      expect(solution).to eql(attacking_piece)
+      solution = new_game.check_situation?(new_game.board, new_game.player_ordered_list[0], new_game.player_ordered_list[1])
+      expect(solution).to be true
     end
     it 'Return nil for the step before Back Rank mate situation' do
       new_game.board.content = Array.new(8) { Array.new(8, nil) }
@@ -1314,8 +1314,8 @@ describe ChessGame do
       new_game.board.content[1][7] = WhitePawn.new([7, 1])
       new_game.board.content[0][3] = WhiteRook.new([3, 0])
       new_game.board.content[7][6] = BlackKing.new([6, 7])
-      solution = new_game.inform_which_piece_create_check(new_game.board, new_game.player_ordered_list[0], new_game.player_ordered_list[1])
-      expect(solution).to eql(nil)
+      solution = new_game.check_situation?(new_game.board, new_game.player_ordered_list[0], new_game.player_ordered_list[1])
+      expect(solution).to be false
     end
     it 'Return true for the Back Rank mate situation' do
       new_game.board.content = Array.new(8) { Array.new(8, nil) }
@@ -1329,8 +1329,8 @@ describe ChessGame do
       attacking_piece = WhiteRook.new([3, 7])
       new_game.board.content[7][3] = attacking_piece
       new_game.board.content[7][6] = BlackKing.new([6, 7])
-      solution = new_game.inform_which_piece_create_check(new_game.board, new_game.player_ordered_list[0], new_game.player_ordered_list[1])
-      expect(solution).to eql(attacking_piece)
+      solution = new_game.check_situation?(new_game.board, new_game.player_ordered_list[0], new_game.player_ordered_list[1])
+      expect(solution).to be true
     end
     it 'Return nil for the step before Balestra mate situation' do
       new_game.board.content = Array.new(8) { Array.new(8, nil) }
@@ -1338,8 +1338,8 @@ describe ChessGame do
       new_game.board.content[5][5] = WhiteQueen.new([5, 5])
       new_game.board.content[2][5] = WhiteBishop.new([5, 2])
       new_game.board.content[7][4] = BlackKing.new([4, 7])
-      solution = new_game.inform_which_piece_create_check(new_game.board, new_game.player_ordered_list[0], new_game.player_ordered_list[1])
-      expect(solution).to eql(nil)
+      solution = new_game.check_situation?(new_game.board, new_game.player_ordered_list[0], new_game.player_ordered_list[1])
+      expect(solution).to be false
     end
     it 'Return true for the Balestra mate situation' do
       new_game.board.content = Array.new(8) { Array.new(8, nil) }
@@ -1348,8 +1348,8 @@ describe ChessGame do
       attacking_piece = WhiteBishop.new([2, 5])
       new_game.board.content[5][2] = attacking_piece
       new_game.board.content[7][4] = BlackKing.new([4, 7])
-      solution = new_game.inform_which_piece_create_check(new_game.board, new_game.player_ordered_list[0], new_game.player_ordered_list[1])
-      expect(solution).to eql(attacking_piece)
+      solution = new_game.check_situation?(new_game.board, new_game.player_ordered_list[0], new_game.player_ordered_list[1])
+      expect(solution).to be true
     end
     it 'Return nil for the step before Blackburne mate situation' do
       new_game.board.content = Array.new(8) { Array.new(8, nil) }
@@ -1359,8 +1359,8 @@ describe ChessGame do
       new_game.board.content[4][6] = WhiteKnight.new([6, 4])
       new_game.board.content[7][6] = BlackKing.new([6, 7])
       new_game.board.content[7][5] = BlackRook.new([5, 7])
-      solution = new_game.inform_which_piece_create_check(new_game.board, new_game.player_ordered_list[0], new_game.player_ordered_list[1])
-      expect(solution).to eql(nil)
+      solution = new_game.check_situation?(new_game.board, new_game.player_ordered_list[0], new_game.player_ordered_list[1])
+      expect(solution).to be false
     end
     it 'Return true for the Blackburne mate situation' do
       new_game.board.content = Array.new(8) { Array.new(8, nil) }
@@ -1371,8 +1371,8 @@ describe ChessGame do
       new_game.board.content[4][6] = WhiteKnight.new([6, 4])
       new_game.board.content[7][6] = BlackKing.new([6, 7])
       new_game.board.content[7][5] = BlackRook.new([5, 7])
-      solution = new_game.inform_which_piece_create_check(new_game.board, new_game.player_ordered_list[0], new_game.player_ordered_list[1])
-      expect(solution).to eql(attacking_piece)
+      solution = new_game.check_situation?(new_game.board, new_game.player_ordered_list[0], new_game.player_ordered_list[1])
+      expect(solution).to be true
     end
   end
 end

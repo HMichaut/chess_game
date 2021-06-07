@@ -49,16 +49,14 @@ class ChessGame
 
   # Determines if any piece has any move and if king is not attacked to check for tie game
   def tie_game?
-    attacking_piece = inform_which_piece_create_check(@board, @player_ordered_list[0], @player_ordered_list[1])
-    return false unless attacking_piece.nil?
+    return false if check_situation?(@board, @player_ordered_list[0], @player_ordered_list[1])
 
     no_move_possible?(@player_ordered_list)
   end
 
   # Determines if player has won
   def player_won?
-    attacking_piece = inform_which_piece_create_check(@board, @player_ordered_list[0], @player_ordered_list[1])
-    return false if attacking_piece.nil?
+    return false unless check_situation?(@board, @player_ordered_list[0], @player_ordered_list[1])
 
     no_move_possible?(@player_ordered_list.rotate)
   end
@@ -67,25 +65,24 @@ class ChessGame
   def no_move_possible?(player_list)
     current_player = player_list[0]
     current_player.muster_all_pieces_for_player(@board).each do |chess_piece|
-
       attack_array = create_legal_moves_array(chess_piece, 'placeholder')
       move_array = create_legal_moves_array(chess_piece, nil).select { |posn| @board.content[posn[1]][posn[0]].nil? }
 
       return false if attack_array.any? { |posn| move_legal?(posn, chess_piece, @board.content[posn[1]][posn[0]], @board, player_list) }
+
       return false if move_array.any? { |posn| move_legal?(posn, chess_piece, nil, @board, player_list) }
     end
     true
   end
 
-  # Determines if there is a check and if yes returns the piece
-  def inform_which_piece_create_check(input_board, current_player, opponent_player)
+  # Determines if there is a check situation
+  def check_situation?(input_board, current_player, opponent_player)
     opponent_king = opponent_player.find_king(input_board)
     chess_piece_array_to_be_considered = current_player.muster_all_pieces_for_player(input_board)
-    chess_piece_array_to_be_considered.each do |chess_piece|
+    chess_piece_array_to_be_considered.any? do |chess_piece|
       proc_array = create_legal_moves_array(chess_piece, opponent_king)
-      return chess_piece if proc_array.any? { |posn| posn == opponent_king.piece_posn && !input_board.obstruction?(chess_piece.piece_posn, opponent_king.piece_posn) }
+      proc_array.any? { |posn| posn == opponent_king.piece_posn && !input_board.obstruction?(chess_piece.piece_posn, opponent_king.piece_posn) }
     end
-    nil
   end
 
   # Acquire player choice
@@ -95,7 +92,7 @@ class ChessGame
   end
 
   # Helper function to select piece
-  def select_piece(posn)
+  def select_piece_from_posn(posn)
     x_posn = posn[0]
     y_posn = posn[1]
     @board.content[y_posn][x_posn]
@@ -149,64 +146,87 @@ class ChessGame
     board_save = Marshal.load( Marshal.dump(@board))
     duplicate_piece_selected = board_save.content[piece_selected.piece_posn[1]][piece_selected.piece_posn[0]]
     move_piece(board_save, duplicate_piece_selected, posn_selected)
-    inform_which_piece_create_check(board_save, opponent_player, current_player).nil?
+    !check_situation?(board_save, opponent_player, current_player)
   end
 
   # Determines if move is a legal castling move
   def castling_moves?(posn_selected, piece_selected, target_piece_selected, input_board)
     return false unless target_piece_selected.nil?
+    return false if piece_selected.nil?
 
-    if piece_selected.is_a?(WhiteKing)
-      return true if input_board.content[0][0].is_a?(WhiteRook) && piece_selected.piece_posn == [4, 0] && posn_selected == [2, 0] && input_board.content[0][1].nil? && input_board.content[0][2].nil? && input_board.content[0][3].nil?
+    piece_selected.is_a?(WhiteKing) || piece_selected.is_a?(BlackKing) && bottom_left_rook?(input_board, piece_selected, posn_selected)||
+      bottom_right_rook?(input_board, piece_selected, posn_selected)  || top_left_rook?(input_board, piece_selected, posn_selected)  || 
+      top_right_rook?(input_board, piece_selected, posn_selected)
+  end
 
-      return true if input_board.content[0][7].is_a?(WhiteRook) && piece_selected.piece_posn == [4, 0] && posn_selected == [6, 0] && input_board.content[0][5].nil? && input_board.content[0][6].nil?
-    elsif piece_selected.is_a?(BlackKing)
-      return true if input_board.content[7][0].is_a?(BlackRook) && piece_selected.piece_posn == [4, 7] && posn_selected == [2, 7] && input_board.content[7][1].nil? && input_board.content[7][2].nil? && input_board.content[7][3].nil?
+  def castling_move (king_selected, king_destination, rook_posn, rook_destination, input_board)
+    input_rook = input_board.content[rook_posn[1]][rook_posn[0]]
+    input_board.content[rook_posn[1]][rook_posn[0]] = nil
+    input_board.content[king_selected.piece_posn[1]][king_selected.piece_posn[0]] = nil
+    input_board.content[king_destination[1]][king_destination[0]] = king_selected
+    input_board.content[rook_destination[1]][rook_destination[0]] = input_rook
+    input_rook.piece_posn = rook_destination
+    king_selected.piece_posn = king_destination
+  end
 
-      return true if input_board.content[7][7].is_a?(BlackRook) && piece_selected.piece_posn == [4, 7] && posn_selected == [6, 7] && input_board.content[7][5].nil? && input_board.content[7][6].nil?
-    end
+  def bottom_left_rook?(input_board, piece_selected, posn_selected)
+    input_board.content[0][0].is_a?(WhiteRook) && piece_selected.piece_posn == [4, 0] &&
+      posn_selected == [2, 0] && input_board.content[0][1].nil? && input_board.content[0][2].nil? &&
+      input_board.content[0][3].nil?
+  end
+
+  def bottom_right_rook?(input_board, piece_selected, posn_selected)
+    input_board.content[0][7].is_a?(WhiteRook) && piece_selected.piece_posn == [4, 0] &&
+      posn_selected == [6, 0] && input_board.content[0][5].nil? && input_board.content[0][6].nil?
+  end
+
+  def top_left_rook?(input_board, piece_selected, posn_selected)
+    input_board.content[7][0].is_a?(BlackRook) && piece_selected.piece_posn == [4, 7] &&
+      posn_selected == [2, 7] && input_board.content[7][1].nil? && input_board.content[7][2].nil? &&
+      input_board.content[7][3].nil?
+  end
+
+  def top_right_rook?(input_board, piece_selected, posn_selected)
+    input_board.content[7][7].is_a?(BlackRook) && piece_selected.piece_posn == [4, 7] &&
+      posn_selected == [6, 7] && input_board.content[7][5].nil? && input_board.content[7][6].nil?
   end
 
   # Determines if move is a legal castling move
   def castling_moves(posn_selected, piece_selected, target_piece_selected, input_board)
     return false unless target_piece_selected.nil?
+    if piece_selected.is_a?(WhiteKing)
+      if bottom_left_rook?(input_board, piece_selected, posn_selected)
+        castling_move(piece_selected, posn_selected, [0, 0], [3, 0], input_board)
+      elsif bottom_right_rook?(input_board, piece_selected, posn_selected)
+        castling_move(piece_selected, posn_selected, [7, 0], [5, 0], input_board)
+      end
+    elsif piece_selected.is_a?(BlackKing)
+      if top_left_rook?(input_board, piece_selected, posn_selected)
+        castling_move(piece_selected, posn_selected, [0, 7], [3, 7], input_board)
+      elsif top_right_rook?(input_board, piece_selected, posn_selected)
+        castling_move(piece_selected, posn_selected, [7, 7], [5, 7], input_board)
+      end
+    end
+  end
 
-    if piece_selected.is_a?(WhiteKing) && input_board.content[0][0].is_a?(WhiteRook) && piece_selected.piece_posn == [4, 0] && posn_selected == [2, 0] && input_board.content[0][1].nil? && input_board.content[0][2].nil? && input_board.content[0][3].nil?
-      input_rook = input_board.content[0][0]
-      input_board.content[0][0] = nil
-      input_board.content[piece_selected.piece_posn[1]][piece_selected.piece_posn[0]] = nil
-      input_board.content[posn_selected[1]][posn_selected[0]] = piece_selected
-      input_board.content[0][3] = input_rook
-      input_rook.piece_posn = [3, 0]
-      piece_selected.piece_posn = posn_selected
+  def select_piece(piece_selected = nil)
+    until selection_own_piece?(piece_selected)
+      piece_posn = acquire_piece_position
+      piece_selected = select_piece_from_posn(piece_posn)
+    end
+    piece_selected
+  end
 
-    elsif piece_selected.is_a?(WhiteKing) && input_board.content[0][7].is_a?(WhiteRook) && piece_selected.piece_posn == [4, 0] && posn_selected == [6, 0] && input_board.content[0][5].nil? && input_board.content[0][6].nil?
-      input_rook = input_board.content[0][7]
-      input_board.content[0][7] = nil
-      input_board.content[piece_selected.piece_posn[1]][piece_selected.piece_posn[0]] = nil
-      input_board.content[posn_selected[1]][posn_selected[0]] = piece_selected
-      input_board.content[0][5] = input_rook
-      input_rook.piece_posn = [5, 0]
-      piece_selected.piece_posn = posn_selected
-
-    elsif piece_selected.is_a?(BlackKing) && input_board.content[7][0].is_a?(BlackRook) && piece_selected.piece_posn == [4, 7] && posn_selected == [2, 7] && input_board.content[7][1].nil? && input_board.content[7][2].nil? && input_board.content[7][3].nil?
-      input_rook = input_board.content[7][0]
-      input_board.content[7][0] = nil
-      input_board.content[piece_selected.piece_posn[1]][piece_selected.piece_posn[0]] = nil
-      input_board.content[posn_selected[1]][posn_selected[0]] = piece_selected
-      input_board.content[7][3] = input_rook
-      input_rook.piece_posn = [3, 7]
-      piece_selected.piece_posn = posn_selected
-
-    elsif piece_selected.is_a?(BlackKing) && input_board.content[7][7].is_a?(BlackRook) && piece_selected.piece_posn == [4, 7] && posn_selected == [6, 7] && input_board.content[7][5].nil? && input_board.content[7][6].nil?
-      input_rook = input_board.content[7][7]
-      input_board.content[7][7] = nil
-      input_board.content[piece_selected.piece_posn[1]][piece_selected.piece_posn[0]] = nil
-      input_board.content[posn_selected[1]][posn_selected[0]] = piece_selected
-      input_board.content[7][5] = input_rook
-      input_rook.piece_posn = [5, 7]
-      piece_selected.piece_posn = posn_selected
-
+  def move_piece_from_input(piece_selected = nil, target_piece_selected = nil, posn_selected = [-1, -1])
+    until move_legal?(posn_selected, piece_selected, target_piece_selected, @board, @player_ordered_list)
+      piece_selected = select_piece
+      posn_selected = select_posn
+      target_piece_selected = select_piece_from_posn(posn_selected)
+    end
+    move_piece(@board, piece_selected, posn_selected)
+    unless target_piece_selected.nil?
+      opponent_player_piece_array = @player_ordered_list[1].chess_pieces_array
+      opponent_player_piece_array.delete(target_piece_selected)
     end
   end
 
@@ -214,44 +234,12 @@ class ChessGame
   def play
     @board.print_board
     until tie_game?
-      piece_selected = nil
-      target_piece_selected = nil
-      posn_selected = [-1, -1]
-      piece_posn = [-1, -1]
-      until move_legal?(posn_selected, piece_selected, target_piece_selected, @board, @player_ordered_list)
-        piece_selected = nil
-        until selection_own_piece?(piece_selected)
-          piece_posn = acquire_piece_position
-          piece_selected = select_piece(piece_posn)
-        end
-        posn_selected = select_posn
-        target_piece_selected = select_piece(posn_selected)
-      end
-      move_piece(@board, piece_selected, posn_selected)
-      unless target_piece_selected.nil?
-        opponent_player_piece_array = @player_ordered_list[1].chess_pieces_array
-        opponent_player_piece_array.delete(target_piece_selected)
-      end
+      move_piece_from_input
       @board.print_board
       break if player_won?
 
       switch_player
     end
     player_won? ? puts("#{@player_ordered_list[0].name} has won the game!") : puts('TIE!')
-  end
-
-  def self.new_game_or_load
-    user_input = nil
-    until %w[y n].include?(user_input)
-      puts 'Load saved game? y / n'
-      user_input = gets.chomp
-      if user_input == 'y'
-        loaded_game = open('chess_game.yaml', 'r') { |f| YAML.load_file(f) }
-        loaded_game.play
-      elsif user_input == 'n'
-        new_game = ChessGame.new
-        new_game.play
-      end
-    end
   end
 end
