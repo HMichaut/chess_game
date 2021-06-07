@@ -18,7 +18,7 @@ class ChessGame
   def acquire_player_choice
     output = [-1, -1]
     alph_array = ('a'..'z').to_a
-    until is_input_on_the_board?(output)
+    until input_on_the_board?(output)
       puts 'input coordinate or save:'
       output_str = gets.chomp
       if output_str.length == 2 && output_str[0].count('a-z') == 1 && output_str[1].to_i.to_s == output_str[1]
@@ -31,7 +31,7 @@ class ChessGame
   end
 
   # Validates that the output is on the board
-  def is_input_on_the_board?(posn)
+  def input_on_the_board?(posn)
     x = posn[0]
     y = posn[1]
     x.is_a?(Integer) && y.is_a?(Integer) && x.between?(0, (@board.width - 1)) && y.between?(0, (@board.height - 1))
@@ -52,47 +52,7 @@ class ChessGame
     attacking_piece = inform_which_piece_create_check(@board, @player_ordered_list[0], @player_ordered_list[1])
     return false unless attacking_piece.nil?
 
-    no_move_possible?
-  end
-
-  # Determines if any piece has any move
-  def no_move_possible?
-    current_player = @player_ordered_list[0]
-    current_player.muster_all_pieces_for_player(@board).each do |chess_piece|
-
-      # Creation of move arrays
-      attack_array = create_legal_moves_array(chess_piece, 'placeholder')
-      move_array = create_legal_moves_array(chess_piece, nil)
-      next if move_array.nil?
-
-      # Loop for attacking pieces
-      attack_array.each do |posn|
-        board_save = Marshal.load(Marshal.dump(@board))
-        chess_piece_selected = board_save.content[chess_piece.piece_posn[1]][chess_piece.piece_posn[0]]
-        target_piece_selected = board_save.content[posn[1]][posn[0]]
-        next if target_piece_selected.nil? || board_save.obstruction?(chess_piece.piece_posn, posn)
-
-        destination_element = board_save.content[posn[1]][posn[0]]
-        move_piece(board_save, chess_piece_selected, posn)
-        next if !destination_element.nil? && destination_element.color == current_player.color
-
-        attacking_piece = inform_which_piece_create_check(board_save, @player_ordered_list[1], @player_ordered_list[0])
-        return false if attacking_piece.nil?
-      end
-
-      # Loop for moving pieces 
-      move_array.each do |posn_move|
-        board_save = Marshal.load(Marshal.dump(@board))
-        chess_piece_selected = board_save.content[chess_piece.piece_posn[1]][chess_piece.piece_posn[0]]
-        destination_element = board_save.content[posn_move[1]][posn_move[0]]
-        next if board_save.obstruction?(chess_piece_selected.piece_posn, posn_move) || !destination_element.nil?
-
-        move_piece(board_save, chess_piece_selected, posn_move)
-        attacking_piece = inform_which_piece_create_check(board_save, @player_ordered_list[1], @player_ordered_list[0])
-        return false if attacking_piece.nil?
-      end
-    end
-    true
+    no_move_possible?(@player_ordered_list)
   end
 
   # Determines if player has won
@@ -100,42 +60,19 @@ class ChessGame
     attacking_piece = inform_which_piece_create_check(@board, @player_ordered_list[0], @player_ordered_list[1])
     return false if attacking_piece.nil?
 
-    king_cannot_be_saved?(attacking_piece)
+    no_move_possible?(@player_ordered_list.rotate)
   end
 
-  # Determines if king can be saved by moving a piece
-  def king_cannot_be_saved?(attacking_piece)
-    opponent_player = @player_ordered_list[1]
-    opponent_player.muster_all_pieces_for_player(@board).each do |chess_piece|
+  # Determines if any piece has any move
+  def no_move_possible?(player_list)
+    current_player = player_list[0]
+    current_player.muster_all_pieces_for_player(@board).each do |chess_piece|
 
-      # Move arrays creation
-      attack_array = create_legal_moves_array(chess_piece, attacking_piece).select { |posn| posn == attacking_piece.piece_posn }
-      move_array = create_legal_moves_array(chess_piece, nil)
-      next if move_array.nil?
+      attack_array = create_legal_moves_array(chess_piece, 'placeholder')
+      move_array = create_legal_moves_array(chess_piece, nil).select { |posn| @board.content[posn[1]][posn[0]].nil? }
 
-      # Attack loop
-      unless attack_array.nil?
-        board_save = Marshal.load(Marshal.dump(@board))
-        chess_piece_selected = board_save.content[chess_piece.piece_posn[1]][chess_piece.piece_posn[0]]
-        next if board_save.obstruction?(chess_piece.piece_posn, attacking_piece.piece_posn)
-
-        move_piece(board_save, chess_piece_selected, attack_array[0]) unless attack_array.empty?
-
-        attacking_piece_returned = inform_which_piece_create_check(board_save, @player_ordered_list[0], @player_ordered_list[1])
-        return false if attacking_piece_returned.nil?
-      end
-
-      # Move loop
-      move_array.each do |posn|
-        board_save = Marshal.load(Marshal.dump(@board))
-        chess_piece_selected = board_save.content[chess_piece.piece_posn[1]][chess_piece.piece_posn[0]]
-        destination_element = board_save.content[posn[1]][posn[0]]
-        next if board_save.obstruction?(chess_piece.piece_posn, posn) || !destination_element.nil?
-
-        move_piece(board_save, chess_piece_selected, posn)
-        attacking_piece_returned = inform_which_piece_create_check(board_save, @player_ordered_list[0], @player_ordered_list[1])
-        return false if attacking_piece_returned.nil?
-      end
+      return false if attack_array.any? { |posn| move_legal?(posn, chess_piece, @board.content[posn[1]][posn[0]], @board, player_list) }
+      return false if move_array.any? { |posn| move_legal?(posn, chess_piece, nil, @board, player_list) }
     end
     true
   end
@@ -193,15 +130,18 @@ class ChessGame
     else
       move_array = piece_selected.attack_patern.map { |move| [piece_posn[0] + move[0], piece_posn[1] + move[1]] }
     end
-    move_array.select { |move| is_input_on_the_board?(move) }
+    move_array.select { |move| input_on_the_board?(move) }
   end
 
   # Determines if the move selected is legal
-  def move_legal?(posn_selected, piece_selected, target_piece_selected, input_board)
+  def move_legal?(posn_selected, piece_selected, target_piece_selected, input_board, player_list)
+    current_player = player_list[0]
+    opponent_player = player_list[1]
+
     return true if castling_moves?(posn_selected, piece_selected, target_piece_selected, input_board)
 
-    own_piece_array = @player_ordered_list[0].muster_all_pieces_for_player(@board)
-    return false if own_piece_array.any? { |chess_piece| posn_selected == chess_piece.piece_posn} || !is_input_on_the_board?(posn_selected)
+    own_piece_array = current_player.muster_all_pieces_for_player(@board)
+    return false if own_piece_array.any? { |chess_piece| posn_selected == chess_piece.piece_posn} || !input_on_the_board?(posn_selected)
 
     legal_move_array = create_legal_moves_array(piece_selected, target_piece_selected)
     return false if input_board.obstruction?(posn_selected, piece_selected.piece_posn) || !legal_move_array.include?(posn_selected)
@@ -209,23 +149,23 @@ class ChessGame
     board_save = Marshal.load( Marshal.dump(@board))
     duplicate_piece_selected = board_save.content[piece_selected.piece_posn[1]][piece_selected.piece_posn[0]]
     move_piece(board_save, duplicate_piece_selected, posn_selected)
-    inform_which_piece_create_check(board_save, @player_ordered_list[1], @player_ordered_list[0]).nil?
+    inform_which_piece_create_check(board_save, opponent_player, current_player).nil?
   end
 
-    # Determines if move is a legal castling move
-    def castling_moves?(posn_selected, piece_selected, target_piece_selected, input_board)
-      return false unless target_piece_selected.nil?
-  
-      if piece_selected.is_a?(WhiteKing)
-        return true if input_board.content[0][0].is_a?(WhiteRook) && piece_selected.piece_posn == [4, 0] && posn_selected == [2, 0] && input_board.content[0][1].nil? && input_board.content[0][2].nil? && input_board.content[0][3].nil?
+  # Determines if move is a legal castling move
+  def castling_moves?(posn_selected, piece_selected, target_piece_selected, input_board)
+    return false unless target_piece_selected.nil?
 
-        return true if input_board.content[0][7].is_a?(WhiteRook) && piece_selected.piece_posn == [4, 0] && posn_selected == [6, 0] && input_board.content[0][5].nil? && input_board.content[0][6].nil?
-      elsif piece_selected.is_a?(BlackKing)
-        return true if input_board.content[7][0].is_a?(BlackRook) && piece_selected.piece_posn == [4, 7] && posn_selected == [2, 7] && input_board.content[7][1].nil? && input_board.content[7][2].nil? && input_board.content[7][3].nil?
+    if piece_selected.is_a?(WhiteKing)
+      return true if input_board.content[0][0].is_a?(WhiteRook) && piece_selected.piece_posn == [4, 0] && posn_selected == [2, 0] && input_board.content[0][1].nil? && input_board.content[0][2].nil? && input_board.content[0][3].nil?
 
-        return true if input_board.content[7][7].is_a?(BlackRook) && piece_selected.piece_posn == [4, 7] && posn_selected == [6, 7] && input_board.content[7][5].nil? && input_board.content[7][6].nil?
-      end
+      return true if input_board.content[0][7].is_a?(WhiteRook) && piece_selected.piece_posn == [4, 0] && posn_selected == [6, 0] && input_board.content[0][5].nil? && input_board.content[0][6].nil?
+    elsif piece_selected.is_a?(BlackKing)
+      return true if input_board.content[7][0].is_a?(BlackRook) && piece_selected.piece_posn == [4, 7] && posn_selected == [2, 7] && input_board.content[7][1].nil? && input_board.content[7][2].nil? && input_board.content[7][3].nil?
+
+      return true if input_board.content[7][7].is_a?(BlackRook) && piece_selected.piece_posn == [4, 7] && posn_selected == [6, 7] && input_board.content[7][5].nil? && input_board.content[7][6].nil?
     end
+  end
 
   # Determines if move is a legal castling move
   def castling_moves(posn_selected, piece_selected, target_piece_selected, input_board)
@@ -278,7 +218,7 @@ class ChessGame
       target_piece_selected = nil
       posn_selected = [-1, -1]
       piece_posn = [-1, -1]
-      until move_legal?(posn_selected, piece_selected, target_piece_selected, @board)
+      until move_legal?(posn_selected, piece_selected, target_piece_selected, @board, @player_ordered_list)
         piece_selected = nil
         until selection_own_piece?(piece_selected)
           piece_posn = acquire_piece_position

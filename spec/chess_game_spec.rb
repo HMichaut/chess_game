@@ -5,37 +5,37 @@ require_relative '../lib/chess_game'
 describe ChessGame do
   subject(:new_game) { described_class.new }
 
-  describe '#is_input_on_the_board?' do
+  describe '#input_on_the_board?' do
     it 'Returns true for a input at [0, 0]' do
-      solution = new_game.is_input_on_the_board?([0, 0])
+      solution = new_game.input_on_the_board?([0, 0])
       expect(solution).to be true
     end
     it 'Returns true for a input at [7, 7]' do
-      solution = new_game.is_input_on_the_board?([7, 7])
+      solution = new_game.input_on_the_board?([7, 7])
       expect(solution).to be true
     end
     it 'Returns true for a input at [7, 0]' do
-      solution = new_game.is_input_on_the_board?([7, 0])
+      solution = new_game.input_on_the_board?([7, 0])
       expect(solution).to be true
     end
     it 'Returns true for a input at [0, 7]' do
-      solution = new_game.is_input_on_the_board?([0, 7])
+      solution = new_game.input_on_the_board?([0, 7])
       expect(solution).to be true
     end
     it 'Returns false for a input at [-1, 0]' do
-      solution = new_game.is_input_on_the_board?([-1, 0])
+      solution = new_game.input_on_the_board?([-1, 0])
       expect(solution).to be false
     end
     it 'Returns false for a input at [8, 7]' do
-      solution = new_game.is_input_on_the_board?([8, 7])
+      solution = new_game.input_on_the_board?([8, 7])
       expect(solution).to be false
     end
     it 'Returns false for a input at [8, 0]' do
-      solution = new_game.is_input_on_the_board?([8, 0])
+      solution = new_game.input_on_the_board?([8, 0])
       expect(solution).to be false
     end
     it 'Returns false for a input at [0, 8]' do
-      solution = new_game.is_input_on_the_board?([0, 8])
+      solution = new_game.input_on_the_board?([0, 8])
       expect(solution).to be false
     end
   end
@@ -48,39 +48,39 @@ describe ChessGame do
       expect(solution).to be true
     end
     it 'complex diagonal movement' do
-      new_game.move_piece(new_game.board, new_game.board.content[1][3], [3, 2]) if new_game.move_legal?([3, 2], new_game.board.content[1][3], nil, new_game.board)
-      new_game.move_piece(new_game.board, new_game.board.content[6][0], [0, 5]) if new_game.move_legal?([0, 5], new_game.board.content[6][0], nil, new_game.board)
+      new_game.move_piece(new_game.board, new_game.board.content[1][3], [3, 2]) if new_game.move_legal?([3, 2], new_game.board.content[1][3], nil, new_game.board, new_game.player_ordered_list)
+      new_game.move_piece(new_game.board, new_game.board.content[6][0], [0, 5]) if new_game.move_legal?([0, 5], new_game.board.content[6][0], nil, new_game.board, new_game.player_ordered_list)
       piece_checked = new_game.board.content[0][2]
-      new_game.move_piece(new_game.board, piece_checked, [7, 5]) if new_game.move_legal?([7, 5], piece_checked, nil, new_game.board)
-      new_game.move_piece(new_game.board, piece_checked, [0, 0]) if new_game.move_legal?([0, 0], piece_checked, nil, new_game.board)
+      new_game.move_piece(new_game.board, piece_checked, [7, 5]) if new_game.move_legal?([7, 5], piece_checked, nil, new_game.board, new_game.player_ordered_list)
+      new_game.move_piece(new_game.board, piece_checked, [0, 0]) if new_game.move_legal?([0, 0], piece_checked, nil, new_game.board, new_game.player_ordered_list)
       solution = new_game.board.content[0][2].nil? && new_game.board.content[5][7] == piece_checked
       expect(solution).to be true
     end
     it 'second complex diagonal movement' do
-      new_game.move_piece(new_game.board, new_game.board.content[1][3], [3, 2]) if new_game.move_legal?([3, 2], new_game.board.content[1][3], nil, new_game.board)
-      new_game.move_piece(new_game.board, new_game.board.content[6][3], [3, 5]) if new_game.move_legal?([3, 5], new_game.board.content[6][3], nil, new_game.board)
+      new_game.move_piece(new_game.board, new_game.board.content[1][3], [3, 2]) if new_game.move_legal?([3, 2], new_game.board.content[1][3], nil, new_game.board, new_game.player_ordered_list)
+      new_game.move_piece(new_game.board, new_game.board.content[6][3], [3, 5]) if new_game.move_legal?([3, 5], new_game.board.content[6][3], nil, new_game.board, new_game.player_ordered_list)
       piece_checked = new_game.board.content[0][2]
-      new_game.move_piece(new_game.board, piece_checked, [7, 5]) if new_game.move_legal?([7, 5], piece_checked, nil, new_game.board)
+      new_game.move_piece(new_game.board, piece_checked, [7, 5]) if new_game.move_legal?([7, 5], piece_checked, nil, new_game.board, new_game.player_ordered_list)
       second_piece_checked = new_game.board.content[7][2]
-      new_game.move_piece(new_game.board, second_piece_checked, [6, 3]) if new_game.move_legal?([6, 3], second_piece_checked, nil, new_game.board)
+      new_game.move_piece(new_game.board, second_piece_checked, [6, 3]) if new_game.move_legal?([6, 3], second_piece_checked, nil, new_game.board, new_game.player_ordered_list)
       solution = new_game.board.content[0][2].nil? && new_game.board.content[5][7] == piece_checked
       expect(solution).to be true
     end
     it 'third complex diagonal movement' do
-      new_game.move_piece(new_game.board, new_game.board.content[1][1], [1, 2]) if new_game.move_legal?([1, 2], new_game.board.content[1][1], nil, new_game.board)
-      new_game.move_piece(new_game.board, new_game.board.content[6][0], [0, 5]) if new_game.move_legal?([0, 5], new_game.board.content[6][0], nil, new_game.board)
+      new_game.move_piece(new_game.board, new_game.board.content[1][1], [1, 2]) if new_game.move_legal?([1, 2], new_game.board.content[1][1], nil, new_game.board, new_game.player_ordered_list)
+      new_game.move_piece(new_game.board, new_game.board.content[6][0], [0, 5]) if new_game.move_legal?([0, 5], new_game.board.content[6][0], nil, new_game.board, new_game.player_ordered_list)
       piece_checked = new_game.board.content[0][2]
-      new_game.move_piece(new_game.board, piece_checked, [0, 2]) if new_game.move_legal?([0, 2], piece_checked, nil, new_game.board)
+      new_game.move_piece(new_game.board, piece_checked, [0, 2]) if new_game.move_legal?([0, 2], piece_checked, nil, new_game.board, new_game.player_ordered_list)
       solution = new_game.board.content[0][2].nil? && new_game.board.content[2][0] == piece_checked
       expect(solution).to be true
     end
     it 'fourth complex diagonal movement' do
-      new_game.move_piece(new_game.board, new_game.board.content[1][3], [3, 2]) if new_game.move_legal?([3, 2], new_game.board.content[1][3], nil, new_game.board)
-      new_game.move_piece(new_game.board, new_game.board.content[6][1], [1, 5]) if new_game.move_legal?([1, 5], new_game.board.content[6][1], nil, new_game.board)
+      new_game.move_piece(new_game.board, new_game.board.content[1][3], [3, 2]) if new_game.move_legal?([3, 2], new_game.board.content[1][3], nil, new_game.board, new_game.player_ordered_list)
+      new_game.move_piece(new_game.board, new_game.board.content[6][1], [1, 5]) if new_game.move_legal?([1, 5], new_game.board.content[6][1], nil, new_game.board, new_game.player_ordered_list)
       piece_checked = new_game.board.content[0][2]
-      new_game.move_piece(new_game.board, piece_checked, [7, 5]) if new_game.move_legal?([7, 5], piece_checked, nil, new_game.board)
+      new_game.move_piece(new_game.board, piece_checked, [7, 5]) if new_game.move_legal?([7, 5], piece_checked, nil, new_game.board, new_game.player_ordered_list)
       second_piece_checked = new_game.board.content[7][2]
-      new_game.move_piece(new_game.board, second_piece_checked, [0, 5]) if new_game.move_legal?([0, 5], second_piece_checked, nil, new_game.board)
+      new_game.move_piece(new_game.board, second_piece_checked, [0, 5]) if new_game.move_legal?([0, 5], second_piece_checked, nil, new_game.board, new_game.player_ordered_list)
       solution = new_game.board.content[0][2].nil? && new_game.board.content[5][7] == piece_checked
       expect(solution).to be true
     end
@@ -862,7 +862,7 @@ describe ChessGame do
       new_game.board.content[0][4] = WhiteKing.new([4, 0])
       new_game.board.content[2][1] = WhiteQueen.new([1, 2])
       new_game.board.content[0][0] = BlackKing.new([0, 0])
-      solution = new_game.no_move_possible?
+      solution = new_game.no_move_possible?(new_game.player_ordered_list)
       expect(solution).to be true
     end
     it 'Return true for a complex tie game situation' do
@@ -878,7 +878,7 @@ describe ChessGame do
       new_game.board.content[5][0] = BlackPawn.new([0, 5])
       new_game.board.content[1][0] = WhiteRook.new([0, 1])
       new_game.board.content[0][7] = BlackKing.new([7, 0])
-      solution = new_game.no_move_possible?
+      solution = new_game.no_move_possible?(new_game.player_ordered_list)
       expect(solution).to be true
     end
     it 'Return false for a tie game situation that can be solved by moving the king' do
@@ -887,7 +887,7 @@ describe ChessGame do
       new_game.board.content[0][4] = WhiteKing.new([4, 0])
       new_game.board.content[3][1] = WhiteQueen.new([1, 3])
       new_game.board.content[0][0] = BlackKing.new([0, 0])
-      solution = new_game.no_move_possible?
+      solution = new_game.no_move_possible?(new_game.player_ordered_list)
       expect(solution).to be false
     end
     it 'Return false for a tie game situation that can be solved by moving another piece' do
@@ -897,7 +897,7 @@ describe ChessGame do
       new_game.board.content[2][1] = WhiteQueen.new([1, 2])
       new_game.board.content[0][0] = BlackKing.new([0, 0])
       new_game.board.content[4][4] = BlackPawn.new([4, 4])
-      solution = new_game.no_move_possible?
+      solution = new_game.no_move_possible?(new_game.player_ordered_list)
       expect(solution).to be false
     end
     it 'Return false for a tie game situation that can be solved by attacking with the king' do
@@ -906,7 +906,7 @@ describe ChessGame do
       new_game.board.content[0][4] = WhiteKing.new([4, 0])
       new_game.board.content[1][1] = WhiteRook.new([1, 1])
       new_game.board.content[0][0] = BlackKing.new([0, 0])
-      solution = new_game.no_move_possible?
+      solution = new_game.no_move_possible?(new_game.player_ordered_list)
       expect(solution).to be false
     end
     it 'Return false for a tie game situation that can be solved by attacking with another piece' do
@@ -916,8 +916,146 @@ describe ChessGame do
       new_game.board.content[2][1] = WhiteQueen.new([1, 2])
       new_game.board.content[0][0] = BlackKing.new([0, 0])
       new_game.board.content[3][2] = BlackPawn.new([2, 3])
-      solution = new_game.no_move_possible?
+      solution = new_game.no_move_possible?(new_game.player_ordered_list)
       expect(solution).to be false
+    end
+    it 'Return false for an incorrect Anastasia mate situation' do
+      new_game.board.content = Array.new(8) { Array.new(8, nil) }
+      new_game.board.content[0][6] = WhiteKing.new([6, 0])
+      new_game.board.content[6][4] = WhiteKnight.new([4, 6])
+      attacking_piece = WhiteRook.new([7, 2])
+      new_game.board.content[2][7] = attacking_piece
+      new_game.board.content[6][6] = BlackPawn.new([6, 6])
+      new_game.board.content[5][7] = BlackKing.new([7, 5])
+      solution = new_game.no_move_possible?(new_game.player_ordered_list.rotate)
+      expect(solution).to be false
+    end
+    it 'Return true for the Anastasia mate situation' do
+      new_game.board.content = Array.new(8) { Array.new(8, nil) }
+      new_game.board.content[0][6] = WhiteKing.new([6, 0])
+      new_game.board.content[6][4] = WhiteKnight.new([4, 6])
+      attacking_piece = WhiteRook.new([7, 2])
+      new_game.board.content[2][7] = attacking_piece
+      new_game.board.content[6][6] = BlackPawn.new([6, 6])
+      new_game.board.content[6][7] = BlackKing.new([7, 6])
+      solution = new_game.no_move_possible?(new_game.player_ordered_list.rotate)
+      expect(solution).to be true
+    end
+    it 'Return false for an incorrect Andersen mate situation' do
+      new_game.board.content = Array.new(8) { Array.new(8, nil) }
+      new_game.board.content[5][4] = WhiteKing.new([4, 5])
+      new_game.board.content[6][5] = WhitePawn.new([5, 6])
+      attacking_piece = WhiteRook.new([7, 7])
+      new_game.board.content[7][7] = attacking_piece
+      new_game.board.content[7][6] = BlackKing.new([6, 7])
+      solution = new_game.no_move_possible?(new_game.player_ordered_list.rotate)
+      expect(solution).to be false
+    end
+    it 'Return true for the Andersen mate situation' do
+      new_game.board.content = Array.new(8) { Array.new(8, nil) }
+      new_game.board.content[5][5] = WhiteKing.new([5, 5])
+      new_game.board.content[6][6] = WhitePawn.new([6, 6])
+      attacking_piece = WhiteRook.new([7, 7])
+      new_game.board.content[7][7] = attacking_piece
+      new_game.board.content[7][6] = BlackKing.new([6, 7])
+      solution = new_game.no_move_possible?(new_game.player_ordered_list.rotate)
+      expect(solution).to be true
+    end
+    it 'Return false for an incorrect Arabian mate situation' do
+      new_game.board.content = Array.new(8) { Array.new(8, nil) }
+      new_game.board.content[0][6] = WhiteKing.new([6, 0])
+      new_game.board.content[4][6] = WhiteKnight.new([6, 4])
+      attacking_piece = WhiteRook.new([7, 6])
+      new_game.board.content[6][7] = attacking_piece
+      new_game.board.content[7][7] = BlackKing.new([7, 7])
+      solution = new_game.no_move_possible?(new_game.player_ordered_list.rotate)
+      expect(solution).to be false
+    end
+    it 'Return true for the Arabian mate situation' do
+      new_game.board.content = Array.new(8) { Array.new(8, nil) }
+      new_game.board.content[0][6] = WhiteKing.new([6, 0])
+      new_game.board.content[5][5] = WhiteKnight.new([5, 5])
+      attacking_piece = WhiteRook.new([7, 6])
+      new_game.board.content[6][7] = attacking_piece
+      new_game.board.content[7][7] = BlackKing.new([7, 7])
+      new_game.board.content[1][1] = BlackRook.new([1, 1])
+      new_game.board.content[1][2] = WhitePawn.new([2, 1])
+      solution = new_game.no_move_possible?(new_game.player_ordered_list.rotate)
+      expect(solution).to be true
+    end
+    it 'Return false for an incorrect Back Rank mate situation' do
+      new_game.board.content = Array.new(8) { Array.new(8, nil) }
+      new_game.board.content[0][6] = WhiteKing.new([6, 0])
+      new_game.board.content[6][5] = BlackPawn.new([5, 6])
+      new_game.board.content[6][6] = BlackPawn.new([6, 6])
+      new_game.board.content[5][7] = BlackPawn.new([7, 5])
+      new_game.board.content[1][5] = WhitePawn.new([5, 1])
+      new_game.board.content[1][6] = WhitePawn.new([6, 1])
+      new_game.board.content[1][7] = WhitePawn.new([7, 1])
+      attacking_piece = WhiteRook.new([3, 7])
+      new_game.board.content[7][3] = attacking_piece
+      new_game.board.content[7][6] = BlackKing.new([6, 7])
+      solution = new_game.no_move_possible?(new_game.player_ordered_list.rotate)
+      expect(solution).to be false
+    end
+    it 'Return true for the Back Rank mate situation' do
+      new_game.board.content = Array.new(8) { Array.new(8, nil) }
+      new_game.board.content[0][6] = WhiteKing.new([6, 0])
+      new_game.board.content[6][5] = BlackPawn.new([5, 6])
+      new_game.board.content[6][6] = BlackPawn.new([6, 6])
+      new_game.board.content[6][7] = BlackPawn.new([7, 6])
+      new_game.board.content[1][5] = WhitePawn.new([5, 1])
+      new_game.board.content[1][6] = WhitePawn.new([6, 1])
+      new_game.board.content[1][7] = WhitePawn.new([7, 1])
+      attacking_piece = WhiteRook.new([3, 7])
+      new_game.board.content[7][3] = attacking_piece
+      new_game.board.content[7][6] = BlackKing.new([6, 7])
+      solution = new_game.no_move_possible?(new_game.player_ordered_list.rotate)
+      expect(solution).to be true
+    end
+    it 'Return false for an incorrect Balestra mate situation' do
+      new_game.board.content = Array.new(8) { Array.new(8, nil) }
+      new_game.board.content[0][6] = WhiteKing.new([6, 0])
+      new_game.board.content[4][6] = WhiteQueen.new([6, 4])
+      attacking_piece = WhiteBishop.new([2, 5])
+      new_game.board.content[5][2] = attacking_piece
+      new_game.board.content[7][4] = BlackKing.new([4, 7])
+      solution = new_game.no_move_possible?(new_game.player_ordered_list.rotate)
+      expect(solution).to be false
+    end
+    it 'Return true for the Balestra mate situation' do
+      new_game.board.content = Array.new(8) { Array.new(8, nil) }
+      new_game.board.content[0][6] = WhiteKing.new([6, 0])
+      new_game.board.content[5][5] = WhiteQueen.new([5, 5])
+      attacking_piece = WhiteBishop.new([2, 5])
+      new_game.board.content[5][2] = attacking_piece
+      new_game.board.content[7][4] = BlackKing.new([4, 7])
+      solution = new_game.no_move_possible?(new_game.player_ordered_list.rotate)
+      expect(solution).to be true
+    end
+    it 'Return false for an incorrect Blackburne mate situation' do
+      new_game.board.content = Array.new(8) { Array.new(8, nil) }
+      new_game.board.content[0][6] = WhiteKing.new([6, 0])
+      new_game.board.content[1][1] = WhiteBishop.new([1, 1])
+      attacking_piece = WhiteBishop.new([7, 6])
+      new_game.board.content[6][7] = attacking_piece
+      new_game.board.content[5][5] = WhiteKnight.new([5, 5])
+      new_game.board.content[7][6] = BlackKing.new([6, 7])
+      new_game.board.content[7][5] = BlackRook.new([5, 7])
+      solution = new_game.no_move_possible?(new_game.player_ordered_list.rotate)
+      expect(solution).to be false
+    end
+    it 'Return true for the Blackburne mate situation' do
+      new_game.board.content = Array.new(8) { Array.new(8, nil) }
+      new_game.board.content[0][6] = WhiteKing.new([6, 0])
+      new_game.board.content[1][1] = WhiteBishop.new([1, 1])
+      attacking_piece = WhiteBishop.new([7, 6])
+      new_game.board.content[6][7] = attacking_piece
+      new_game.board.content[4][6] = WhiteKnight.new([6, 4])
+      new_game.board.content[7][6] = BlackKing.new([6, 7])
+      new_game.board.content[7][5] = BlackRook.new([5, 7])
+      solution = new_game.no_move_possible?(new_game.player_ordered_list.rotate)
+      expect(solution).to be true
     end
   end
 
@@ -1044,147 +1182,6 @@ describe ChessGame do
       new_game.board.content[7][6] = BlackKing.new([6, 7])
       new_game.board.content[7][5] = BlackRook.new([5, 7])
       solution = new_game.player_won?
-      expect(solution).to be true
-    end
-  end
-
-  describe '#king_cannot_be_saved?' do
-    it 'Return false for an incorrect Anastasia mate situation' do
-      new_game.board.content = Array.new(8) { Array.new(8, nil) }
-      new_game.board.content[0][6] = WhiteKing.new([6, 0])
-      new_game.board.content[6][4] = WhiteKnight.new([4, 6])
-      attacking_piece = WhiteRook.new([7, 2])
-      new_game.board.content[2][7] = attacking_piece
-      new_game.board.content[6][6] = BlackPawn.new([6, 6])
-      new_game.board.content[5][7] = BlackKing.new([7, 5])
-      solution = new_game.king_cannot_be_saved?(attacking_piece)
-      expect(solution).to be false
-    end
-    it 'Return true for the Anastasia mate situation' do
-      new_game.board.content = Array.new(8) { Array.new(8, nil) }
-      new_game.board.content[0][6] = WhiteKing.new([6, 0])
-      new_game.board.content[6][4] = WhiteKnight.new([4, 6])
-      attacking_piece = WhiteRook.new([7, 2])
-      new_game.board.content[2][7] = attacking_piece
-      new_game.board.content[6][6] = BlackPawn.new([6, 6])
-      new_game.board.content[6][7] = BlackKing.new([7, 6])
-      solution = new_game.king_cannot_be_saved?(attacking_piece)
-      expect(solution).to be true
-    end
-    it 'Return false for an incorrect Andersen mate situation' do
-      new_game.board.content = Array.new(8) { Array.new(8, nil) }
-      new_game.board.content[5][4] = WhiteKing.new([4, 5])
-      new_game.board.content[6][5] = WhitePawn.new([5, 6])
-      attacking_piece = WhiteRook.new([7, 7])
-      new_game.board.content[7][7] = attacking_piece
-      new_game.board.content[7][6] = BlackKing.new([6, 7])
-      solution = new_game.king_cannot_be_saved?(attacking_piece)
-      expect(solution).to be false
-    end
-    it 'Return true for the Andersen mate situation' do
-      new_game.board.content = Array.new(8) { Array.new(8, nil) }
-      new_game.board.content[5][5] = WhiteKing.new([5, 5])
-      new_game.board.content[6][6] = WhitePawn.new([6, 6])
-      attacking_piece = WhiteRook.new([7, 7])
-      new_game.board.content[7][7] = attacking_piece
-      new_game.board.content[7][6] = BlackKing.new([6, 7])
-      solution = new_game.king_cannot_be_saved?(attacking_piece)
-      expect(solution).to be true
-    end
-    it 'Return false for an incorrect Arabian mate situation' do
-      new_game.board.content = Array.new(8) { Array.new(8, nil) }
-      new_game.board.content[0][6] = WhiteKing.new([6, 0])
-      new_game.board.content[4][6] = WhiteKnight.new([6, 4])
-      attacking_piece = WhiteRook.new([7, 6])
-      new_game.board.content[6][7] = attacking_piece
-      new_game.board.content[7][7] = BlackKing.new([7, 7])
-      solution = new_game.king_cannot_be_saved?(attacking_piece)
-      expect(solution).to be false
-    end
-    it 'Return true for the Arabian mate situation' do
-      new_game.board.content = Array.new(8) { Array.new(8, nil) }
-      new_game.board.content[0][6] = WhiteKing.new([6, 0])
-      new_game.board.content[5][5] = WhiteKnight.new([5, 5])
-      attacking_piece = WhiteRook.new([7, 6])
-      new_game.board.content[6][7] = attacking_piece
-      new_game.board.content[7][7] = BlackKing.new([7, 7])
-      new_game.board.content[1][1] = BlackRook.new([1, 1])
-      new_game.board.content[1][2] = WhitePawn.new([2, 1])
-      solution = new_game.king_cannot_be_saved?(attacking_piece)
-      expect(solution).to be true
-    end
-    it 'Return false for an incorrect Back Rank mate situation' do
-      new_game.board.content = Array.new(8) { Array.new(8, nil) }
-      new_game.board.content[0][6] = WhiteKing.new([6, 0])
-      new_game.board.content[6][5] = BlackPawn.new([5, 6])
-      new_game.board.content[6][6] = BlackPawn.new([6, 6])
-      new_game.board.content[5][7] = BlackPawn.new([7, 5])
-      new_game.board.content[1][5] = WhitePawn.new([5, 1])
-      new_game.board.content[1][6] = WhitePawn.new([6, 1])
-      new_game.board.content[1][7] = WhitePawn.new([7, 1])
-      attacking_piece = WhiteRook.new([3, 7])
-      new_game.board.content[7][3] = attacking_piece
-      new_game.board.content[7][6] = BlackKing.new([6, 7])
-      solution = new_game.king_cannot_be_saved?(attacking_piece)
-      expect(solution).to be false
-    end
-    it 'Return true for the Back Rank mate situation' do
-      new_game.board.content = Array.new(8) { Array.new(8, nil) }
-      new_game.board.content[0][6] = WhiteKing.new([6, 0])
-      new_game.board.content[6][5] = BlackPawn.new([5, 6])
-      new_game.board.content[6][6] = BlackPawn.new([6, 6])
-      new_game.board.content[6][7] = BlackPawn.new([7, 6])
-      new_game.board.content[1][5] = WhitePawn.new([5, 1])
-      new_game.board.content[1][6] = WhitePawn.new([6, 1])
-      new_game.board.content[1][7] = WhitePawn.new([7, 1])
-      attacking_piece = WhiteRook.new([3, 7])
-      new_game.board.content[7][3] = attacking_piece
-      new_game.board.content[7][6] = BlackKing.new([6, 7])
-      solution = new_game.king_cannot_be_saved?(attacking_piece)
-      expect(solution).to be true
-    end
-    it 'Return false for an incorrect Balestra mate situation' do
-      new_game.board.content = Array.new(8) { Array.new(8, nil) }
-      new_game.board.content[0][6] = WhiteKing.new([6, 0])
-      new_game.board.content[4][6] = WhiteQueen.new([6, 4])
-      attacking_piece = WhiteBishop.new([2, 5])
-      new_game.board.content[5][2] = attacking_piece
-      new_game.board.content[7][4] = BlackKing.new([4, 7])
-      solution = new_game.king_cannot_be_saved?(attacking_piece)
-      expect(solution).to be false
-    end
-    it 'Return true for the Balestra mate situation' do
-      new_game.board.content = Array.new(8) { Array.new(8, nil) }
-      new_game.board.content[0][6] = WhiteKing.new([6, 0])
-      new_game.board.content[5][5] = WhiteQueen.new([5, 5])
-      attacking_piece = WhiteBishop.new([2, 5])
-      new_game.board.content[5][2] = attacking_piece
-      new_game.board.content[7][4] = BlackKing.new([4, 7])
-      solution = new_game.king_cannot_be_saved?(attacking_piece)
-      expect(solution).to be true
-    end
-    it 'Return false for an incorrect Blackburne mate situation' do
-      new_game.board.content = Array.new(8) { Array.new(8, nil) }
-      new_game.board.content[0][6] = WhiteKing.new([6, 0])
-      new_game.board.content[1][1] = WhiteBishop.new([1, 1])
-      attacking_piece = WhiteBishop.new([7, 6])
-      new_game.board.content[6][7] = attacking_piece
-      new_game.board.content[5][5] = WhiteKnight.new([5, 5])
-      new_game.board.content[7][6] = BlackKing.new([6, 7])
-      new_game.board.content[7][5] = BlackRook.new([5, 7])
-      solution = new_game.king_cannot_be_saved?(attacking_piece)
-      expect(solution).to be false
-    end
-    it 'Return true for the Blackburne mate situation' do
-      new_game.board.content = Array.new(8) { Array.new(8, nil) }
-      new_game.board.content[0][6] = WhiteKing.new([6, 0])
-      new_game.board.content[1][1] = WhiteBishop.new([1, 1])
-      attacking_piece = WhiteBishop.new([7, 6])
-      new_game.board.content[6][7] = attacking_piece
-      new_game.board.content[4][6] = WhiteKnight.new([6, 4])
-      new_game.board.content[7][6] = BlackKing.new([6, 7])
-      new_game.board.content[7][5] = BlackRook.new([5, 7])
-      solution = new_game.king_cannot_be_saved?(attacking_piece)
       expect(solution).to be true
     end
   end
